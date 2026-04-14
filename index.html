@@ -9,21 +9,22 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy: #152242;
-  --navy-deep: #0e1a38;
-  --navy-card: #1a2d4d;
-  --gold: #D4A030;
-  --gold-dim: rgba(212, 160, 48, 0.15);
-  --gold-glow: rgba(212, 160, 48, 0.08);
-  --text-primary: rgba(255,255,255,0.92);
-  --text-secondary: rgba(255,255,255,0.55);
-  --text-muted: rgba(255,255,255,0.35);
-  --border: rgba(255,255,255,0.06);
+  --navy: #ffffff;
+  --navy-deep: #f5f5f7;
+  --navy-card: #ffffff;
+  --gold: #152242;
+  --gold-dim: rgba(21, 34, 66, 0.1);
+  --gold-glow: rgba(21, 34, 66, 0.05);
+  --brand-b: #b8860b;
+  --text-primary: rgba(0,0,0,0.88);
+  --text-secondary: rgba(0,0,0,0.55);
+  --text-muted: rgba(0,0,0,0.35);
+  --border: rgba(0,0,0,0.1);
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-display: 'DM Serif Display', Georgia, serif;
-  --success: #34d399;
-  --danger: #f87171;
-  --warning: #fbbf24;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #d97706;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { height: 100%; }
@@ -40,9 +41,9 @@ body {
 h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 400; }
 a { color: var(--gold); text-decoration: none; }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: var(--navy-deep); }
-::-webkit-scrollbar-thumb { background: var(--navy-card); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
+::-webkit-scrollbar-track { background: #eee; }
+::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #aaa; }
 
 /* === Buttons === */
 .btn {
@@ -54,9 +55,9 @@ a { color: var(--gold); text-decoration: none; }
 }
 .btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .btn-gold {
-  background: var(--gold); color: var(--navy-deep);
+  background: var(--gold); color: #fff;
 }
-.btn-gold:hover { background: #e0ad35; transform: translateY(-1px); }
+.btn-gold:hover { background: #1c2f55; transform: translateY(-1px); }
 .btn-ghost {
   background: transparent; border: 1px solid var(--gold); color: var(--gold);
 }
@@ -66,9 +67,9 @@ a { color: var(--gold); text-decoration: none; }
 }
 .btn-danger:hover { background: #ef4444; transform: translateY(-1px); }
 .btn-success {
-  background: var(--success); color: var(--navy-deep);
+  background: var(--success); color: #fff;
 }
-.btn-success:hover { background: #2dd48e; transform: translateY(-1px); }
+.btn-success:hover { background: #15803d; transform: translateY(-1px); }
 .btn-sm { padding: 6px 14px; font-size: 12px; }
 .btn-icon {
   padding: 8px; border-radius: 8px; background: transparent; border: none;
@@ -95,11 +96,11 @@ a { color: var(--gold); text-decoration: none; }
 }
 .form-input::placeholder, .form-textarea::placeholder { color: var(--text-muted); }
 .form-select { cursor: pointer; appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='rgba(255,255,255,0.35)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='rgba(0,0,0,0.35)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat; background-position: right 12px center;
   padding-right: 36px;
 }
-.form-select option { background: var(--navy-deep); color: var(--text-primary); }
+.form-select option { background: #fff; color: var(--text-primary); }
 .form-textarea { resize: vertical; min-height: 80px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .form-section-title {
@@ -117,8 +118,9 @@ a { color: var(--gold); text-decoration: none; }
 
 /* === Cards === */
 .card {
-  background: var(--navy-deep); border: 1px solid var(--border);
+  background: #fff; border: 1px solid var(--border);
   border-radius: 12px; padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 /* === Tables === */
@@ -136,7 +138,7 @@ td {
   padding: 12px 14px; border-bottom: 1px solid var(--border);
   font-size: 13px; color: var(--text-primary); vertical-align: middle;
 }
-tr:hover td { background: rgba(255,255,255,0.02); }
+tr:hover td { background: rgba(0,0,0,0.03); }
 .td-actions { display: flex; gap: 6px; }
 .td-truncate { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
@@ -147,9 +149,9 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   padding: 3px 10px; border-radius: 4px;
 }
 .badge-scheduled { border: 1px solid var(--gold); color: var(--gold); background: transparent; }
-.badge-completed { background: var(--success); color: var(--navy-deep); }
+.badge-completed { background: var(--success); color: #fff; }
 .badge-cancelled { background: var(--danger); color: #fff; opacity: 0.8; }
-.badge-no-show { background: var(--text-muted); color: var(--navy-deep); }
+.badge-no-show { background: rgba(0,0,0,0.15); color: rgba(0,0,0,0.5); }
 .badge-admin { background: var(--gold-dim); color: var(--gold); font-size: 10px; }
 .badge-surgeon { color: var(--text-secondary); font-size: 10px; }
 
@@ -166,7 +168,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 }
 .pagination button:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
 .pagination button:disabled { opacity: 0.3; cursor: default; }
-.pagination button.active { background: var(--gold); color: var(--navy-deep); border-color: var(--gold); }
+.pagination button.active { background: var(--gold); color: #fff; border-color: var(--gold); }
 .pagination .page-info { font-size: 12px; color: var(--text-muted); }
 
 /* === Login Screen === */
@@ -189,9 +191,9 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   padding: 14px 32px; border-radius: 8px; font-size: 14px;
   font-weight: 700; font-family: var(--font-body);
   cursor: pointer; border: none; background: var(--gold);
-  color: var(--navy-deep); transition: all 0.2s ease;
+  color: #fff; transition: all 0.2s ease;
 }
-.login-btn:hover { background: #e0ad35; transform: translateY(-1px); }
+.login-btn:hover { background: #1c2f55; transform: translateY(-1px); }
 .login-btn svg { width: 20px; height: 20px; }
 .login-footer {
   margin-top: 48px; font-size: 11px; color: var(--text-muted);
@@ -237,7 +239,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   background: none; width: calc(100% - 16px); text-align: left;
   font-family: var(--font-body); position: relative;
 }
-.nav-item:hover { color: var(--text-primary); background: rgba(255,255,255,0.03); }
+.nav-item:hover { color: var(--text-primary); background: rgba(0,0,0,0.04); }
 .nav-item.active {
   color: var(--gold); background: var(--gold-glow);
 }
@@ -292,7 +294,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 }
 #mobile-nav.open { display: flex; }
 #mobile-nav .mobile-nav-panel {
-  width: 280px; background: var(--navy-deep); height: 100%;
+  width: 280px; background: #fff; height: 100%;
   display: flex; flex-direction: column; animation: slideIn 0.2s ease;
 }
 @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
@@ -341,8 +343,9 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   margin-bottom: 32px;
 }
 .stat-card {
-  background: var(--navy-deep); border: 1px solid var(--border);
+  background: #fff; border: 1px solid var(--border);
   border-radius: 12px; padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 .stat-card-label {
   font-size: 11px; text-transform: uppercase; color: var(--text-muted);
@@ -383,7 +386,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   vertical-align: top; cursor: pointer; transition: background 0.15s ease;
 }
 .cal-cell:nth-child(7n) { border-right: none; }
-.cal-cell:hover { background: rgba(255,255,255,0.02); }
+.cal-cell:hover { background: rgba(0,0,0,0.03); }
 .cal-cell.outside { opacity: 0.3; }
 .cal-cell.today { background: var(--gold-glow); }
 .cal-cell .cal-date {
@@ -398,9 +401,9 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 }
 .cal-pill:hover { opacity: 0.8; }
 .cal-pill.status-scheduled { background: var(--gold-dim); color: var(--gold); }
-.cal-pill.status-completed { background: rgba(52,211,153,0.2); color: var(--success); }
-.cal-pill.status-cancelled { background: rgba(248,113,113,0.2); color: var(--danger); }
-.cal-pill.status-no-show { background: rgba(255,255,255,0.05); color: var(--text-muted); }
+.cal-pill.status-completed { background: rgba(22,163,74,0.12); color: var(--success); }
+.cal-pill.status-cancelled { background: rgba(220,38,38,0.12); color: var(--danger); }
+.cal-pill.status-no-show { background: rgba(0,0,0,0.06); color: var(--text-muted); }
 
 .gcal-banner {
   padding: 14px 20px; border-radius: 10px; margin-bottom: 20px;
@@ -408,10 +411,10 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   gap: 12px; flex-wrap: wrap;
 }
 .gcal-banner.disconnected {
-  background: var(--gold-dim); border: 1px solid rgba(212,160,48,0.25);
+  background: var(--gold-dim); border: 1px solid rgba(21,34,66,0.15);
 }
 .gcal-banner.connected {
-  background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2);
+  background: rgba(22,163,74,0.06); border: 1px solid rgba(22,163,74,0.2);
 }
 .gcal-banner p { font-size: 13px; }
 .gcal-banner .connected-text { color: var(--success); }
@@ -449,17 +452,17 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 }
 .toggle-switch input { opacity: 0; width: 0; height: 0; }
 .toggle-slider {
-  position: absolute; inset: 0; background: var(--navy-card);
+  position: absolute; inset: 0; background: #ddd;
   border-radius: 22px; transition: 0.2s; border: 1px solid var(--border);
 }
 .toggle-slider::before {
   content: ''; position: absolute; width: 16px; height: 16px;
-  left: 2px; bottom: 2px; background: var(--text-muted);
+  left: 2px; bottom: 2px; background: #fff;
   border-radius: 50%; transition: 0.2s;
 }
 .toggle-switch input:checked + .toggle-slider { background: var(--gold-dim); border-color: var(--gold); }
 .toggle-switch input:checked + .toggle-slider::before {
-  transform: translateX(18px); background: var(--gold);
+  transform: translateX(18px); background: #152242;
 }
 .proc-category { margin-bottom: 20px; }
 .proc-category-title {
@@ -471,7 +474,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   padding: 8px 12px; font-size: 13px; border-radius: 6px;
   transition: background 0.15s ease;
 }
-.proc-item:hover { background: rgba(255,255,255,0.02); }
+.proc-item:hover { background: rgba(0,0,0,0.03); }
 .proc-item .badge { font-size: 9px; margin-left: 8px; }
 
 /* === Modal === */
@@ -482,10 +485,10 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 }
 #modal-overlay.open { display: flex; }
 #modal-box {
-  background: var(--navy-card); border-radius: 16px;
+  background: #fff; border: 1px solid var(--border); border-radius: 16px;
   max-width: 600px; width: 100%; max-height: 85vh;
   overflow-y: auto; animation: modalIn 0.15s ease;
-  position: relative;
+  position: relative; box-shadow: 0 16px 48px rgba(0,0,0,0.15);
 }
 @keyframes modalIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
 .modal-header {
@@ -499,7 +502,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   align-items: center; justify-content: center; border-radius: 6px;
   transition: all 0.15s ease;
 }
-.modal-close:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+.modal-close:hover { color: var(--text-primary); background: rgba(0,0,0,0.05); }
 .modal-body { padding: 20px 24px; }
 .modal-footer {
   display: flex; justify-content: flex-end; gap: 8px;
@@ -514,9 +517,9 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 }
 #confirm-overlay.open { display: flex; }
 #confirm-box {
-  background: var(--navy-card); border-radius: 16px;
+  background: #fff; border: 1px solid var(--border); border-radius: 16px;
   max-width: 400px; width: 100%; padding: 24px;
-  animation: modalIn 0.15s ease;
+  animation: modalIn 0.15s ease; box-shadow: 0 16px 48px rgba(0,0,0,0.15);
 }
 #confirm-box h3 { font-size: 18px; margin-bottom: 8px; }
 #confirm-box p { color: var(--text-secondary); font-size: 14px; margin-bottom: 20px; }
@@ -528,9 +531,9 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   display: flex; flex-direction: column; gap: 8px; max-width: 360px;
 }
 .toast {
-  background: var(--navy-card); border: 1px solid var(--border);
+  background: #fff; border: 1px solid var(--border);
   border-radius: 10px; padding: 14px 18px; font-size: 13px;
-  animation: toastIn 0.2s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  animation: toastIn 0.2s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.1);
   display: flex; align-items: flex-start; gap: 10px;
 }
 .toast.hide { animation: toastOut 0.2s ease forwards; }
@@ -605,7 +608,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   .cal-pill { font-size: 9px; padding: 1px 4px; }
   table, thead, tbody, th, td, tr { display: block; }
   thead { display: none; }
-  tr { margin-bottom: 12px; background: var(--navy-deep); border-radius: 10px; border: 1px solid var(--border); padding: 12px; }
+  tr { margin-bottom: 12px; background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
   td { padding: 4px 0; border: none; display: flex; justify-content: space-between; align-items: center; }
   td::before { content: attr(data-label); font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; margin-right: 12px; }
   .td-actions { justify-content: flex-end; }
@@ -626,13 +629,18 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 <!-- Login Screen -->
 <div id="login-screen">
   <div class="login-card">
-    <h1 class="login-title">BCeph Log</h1>
+    <h1 class="login-title"><span style="color:var(--brand-b)">B</span>Ceph Log</h1>
     <p class="login-subtitle">Surgical Appointment Manager</p>
     <button id="login-btn" class="login-btn" type="button">
       <svg viewBox="0 0 24 24" width="20" height="20"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
       Sign in with Google
     </button>
-    <div class="login-footer">BCeph Log · Bayan Healthcare Analytics</div>
+    <div style="margin-top:16px; font-size:13px; color:var(--text-muted)">or</div>
+    <button id="guest-btn" class="login-btn" type="button" style="margin-top:16px; background:var(--navy-deep); color:var(--text-primary); border:1px solid var(--border);">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+      Continue as Guest
+    </button>
+    <div class="login-footer"><span style="color:var(--brand-b)">B</span>Ceph Log · Bayan Healthcare Analytics</div>
   </div>
 </div>
 
@@ -650,7 +658,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   <!-- Sidebar (desktop) -->
   <aside id="sidebar">
     <div class="sidebar-brand">
-      <h1>BCeph Log</h1>
+      <h1><span style="color:var(--brand-b)">B</span>Ceph Log</h1>
       <p>Surgical Appointment Manager</p>
     </div>
     <nav class="sidebar-nav" id="sidebar-nav"></nav>
@@ -659,7 +667,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 
   <!-- Mobile Header -->
   <header id="mobile-header">
-    <h1>BCeph Log</h1>
+    <h1><span style="color:var(--brand-b)">B</span>Ceph Log</h1>
     <button class="hamburger" id="hamburger-btn" type="button" aria-label="Menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
@@ -669,7 +677,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   <div id="mobile-nav">
     <div class="mobile-nav-panel">
       <div class="sidebar-brand" style="padding:20px">
-        <h1>BCeph Log</h1>
+        <h1><span style="color:var(--brand-b)">B</span>Ceph Log</h1>
         <p>Surgical Appointment Manager</p>
       </div>
       <nav id="mobile-nav-items" style="flex:1;padding:12px 0"></nav>
@@ -720,7 +728,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 <script type="module">
 // === Firebase SDK Imports ===
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+import { getAuth, signInWithPopup, signInAnonymously, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
 import {
   getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, addDoc,
   query, where, orderBy, limit, onSnapshot, serverTimestamp, writeBatch, Timestamp
@@ -930,15 +938,17 @@ function buildNav(container, isMobile) {
 function buildSidebarUser(container) {
   if (!state.currentUser) return;
   const u = state.currentUser;
+  const roleLabel = u.isAnonymous ? 'Guest' : (u.role === 'admin' ? 'Admin' : 'Surgeon');
+  const roleClass = u.isAnonymous ? 'badge-surgeon' : (u.role === 'admin' ? 'badge-admin' : 'badge-surgeon');
   container.innerHTML = `
     <div class="sidebar-user">
-      <img src="${escapeHtml(u.photoURL || '')}" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22><rect fill=%22%231a2d4d%22 width=%2232%22 height=%2232%22 rx=%2216%22/><text x=%2216%22 y=%2221%22 text-anchor=%22middle%22 fill=%22%23D4A030%22 font-size=%2214%22>${escapeHtml((u.displayName || '?')[0])}</text></svg>'">
+      <img src="${escapeHtml(u.photoURL || '')}" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22><rect fill=%22%23dde2ea%22 width=%2232%22 height=%2232%22 rx=%2216%22/><text x=%2216%22 y=%2221%22 text-anchor=%22middle%22 fill=%22%23152242%22 font-size=%2214%22>${escapeHtml((u.displayName || '?')[0])}</text></svg>'">
       <div class="sidebar-user-info">
         <div class="sidebar-user-name">${escapeHtml(u.displayName)}</div>
-        <span class="sidebar-user-role ${u.role === 'admin' ? 'badge-admin' : 'badge-surgeon'}">${u.role === 'admin' ? 'Admin' : 'Surgeon'}</span>
+        <span class="sidebar-user-role ${roleClass}">${roleLabel}</span>
       </div>
     </div>
-    <button class="sidebar-signout" type="button">Sign Out</button>
+    <button class="sidebar-signout" type="button">${u.isAnonymous ? 'Exit Guest Mode' : 'Sign Out'}</button>
   `;
   container.querySelector('.sidebar-signout').addEventListener('click', doSignOut);
 }
@@ -1082,22 +1092,28 @@ async function handleAuthUser(user) {
 
   hide('#login-screen');
 
+  const isAnonymous = user.isAnonymous;
   const userRef = doc(db, 'users', user.uid);
   const userSnap = await getDoc(userRef);
 
   let role = 'surgeon';
+  let displayName = isAnonymous ? 'Guest' : (user.displayName || user.email || 'User');
+  let email = isAnonymous ? '' : (user.email || '');
   let isNew = false;
 
   if (!userSnap.exists()) {
-    const allUsers = await getDocs(collection(db, 'users'));
-    if (allUsers.size === 0) role = 'admin';
+    if (!isAnonymous) {
+      const allUsers = await getDocs(collection(db, 'users'));
+      if (allUsers.size === 0) role = 'admin';
+    }
     isNew = true;
     await setDoc(userRef, {
-      email: user.email,
-      displayName: user.displayName || user.email,
+      email,
+      displayName,
       photoURL: user.photoURL || '',
       role,
       active: true,
+      isAnonymous,
       createdAt: serverTimestamp(),
       lastLogin: serverTimestamp(),
     });
@@ -1105,7 +1121,8 @@ async function handleAuthUser(user) {
   } else {
     const data = userSnap.data();
     role = data.role;
-    if (!data.active) {
+    displayName = data.displayName || displayName;
+    if (!data.active && !isAnonymous) {
       hide('#login-screen'); hide('#app');
       $('#deactivated-screen').style.display = 'flex';
       return;
@@ -1115,10 +1132,11 @@ async function handleAuthUser(user) {
 
   state.currentUser = {
     uid: user.uid,
-    email: user.email,
-    displayName: user.displayName || user.email,
+    email,
+    displayName,
     photoURL: user.photoURL || '',
     role,
+    isAnonymous,
   };
 
   setupUserDocListener(user.uid);
@@ -1159,6 +1177,14 @@ $('#login-btn').addEventListener('click', async () => {
     await signInWithPopup(auth, provider);
   } catch (e) {
     if (e.code !== 'auth/popup-closed-by-user') toast('Sign-in failed: ' + e.message, 'error');
+  }
+});
+
+$('#guest-btn').addEventListener('click', async () => {
+  try {
+    await signInAnonymously(auth);
+  } catch (e) {
+    toast('Guest sign-in failed: ' + e.message, 'error');
   }
 });
 
@@ -1963,11 +1989,13 @@ async function openAppointmentModal(apptId = null, presetPatient = null) {
       <textarea class="form-textarea" id="am-postop">${escapeHtml(appt?.postOpNotes || '')}</textarea>
     </div>
 
+    ${!state.currentUser?.isAnonymous ? `
     <div class="form-section-title">Google Calendar</div>
     <label class="form-check">
       <input type="checkbox" id="am-gcal" ${state.gcalConnected ? 'checked' : ''} ${!state.gcalConnected ? 'disabled' : ''}>
       Sync to Google Calendar ${!state.gcalConnected ? '<small style="color:var(--text-muted)">(connect in Calendar view)</small>' : ''}
     </label>
+    ` : ''}
   `;
 
   let footerHtml = '<button class="btn btn-ghost" id="am-cancel" type="button">Cancel</button>';
@@ -2080,7 +2108,7 @@ async function openAppointmentModal(apptId = null, presetPatient = null) {
     const surgeonId = $('#am-surgeon').value;
     const preOp = $('#am-preop').value.trim();
     const postOp = $('#am-postop').value.trim();
-    const syncGcal = $('#am-gcal').checked;
+    const syncGcal = $('#am-gcal')?.checked || false;
 
     // Validation
     let valid = true;
