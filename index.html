@@ -1024,8 +1024,8 @@ async function seedProcedures() {
 }
 
 async function fetchProcedures() {
-  const snap = await getDocs(query(collection(db, 'procedures'), orderBy('category'), orderBy('name')));
-  state.proceduresCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  const snap = await getDocs(collection(db, 'procedures'));
+  state.proceduresCache = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a, b) => (a.category || '').localeCompare(b.category || '') || (a.name || '').localeCompare(b.name || ''));
   return state.proceduresCache;
 }
 
@@ -1444,7 +1444,7 @@ async function renderDashboard() {
       row.addEventListener('click', () => openPatientDetail(row.dataset.id));
     });
 
-    setupDashboardListener();
+    if (!state.dashboardUnsubscribe) setupDashboardListener();
   } catch (e) {
     container.innerHTML = `<div class="empty-state"><div class="empty-state-title">Error loading dashboard</div><div class="empty-state-sub">${escapeHtml(e.message)}</div></div>`;
   }
@@ -2264,8 +2264,9 @@ async function renderSettings() {
   try {
     await Promise.all([fetchUsers(), fetchProcedures()]);
     renderSettingsContent(container);
-  } catch {
-    container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Error loading settings</div></div>';
+  } catch (e) {
+    console.error('Settings error:', e);
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-title">Error loading settings</div><div class="empty-state-sub">${escapeHtml(e.message)}</div></div>`;
   }
 }
 
