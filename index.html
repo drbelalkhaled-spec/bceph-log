@@ -1,0 +1,2428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BCeph Log · Surgical Appointment Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #152242;
+  --navy-deep: #0e1a38;
+  --navy-card: #1a2d4d;
+  --gold: #D4A030;
+  --gold-dim: rgba(212, 160, 48, 0.15);
+  --gold-glow: rgba(212, 160, 48, 0.08);
+  --text-primary: rgba(255,255,255,0.92);
+  --text-secondary: rgba(255,255,255,0.55);
+  --text-muted: rgba(255,255,255,0.35);
+  --border: rgba(255,255,255,0.06);
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --success: #34d399;
+  --danger: #f87171;
+  --warning: #fbbf24;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; }
+body {
+  font-family: var(--font-body);
+  background: var(--navy);
+  color: var(--text-primary);
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+  line-height: 1.5;
+}
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 400; }
+a { color: var(--gold); text-decoration: none; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--navy-deep); }
+::-webkit-scrollbar-thumb { background: var(--navy-card); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
+
+/* === Buttons === */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 20px; border-radius: 8px; font-size: 13px;
+  font-weight: 700; font-family: var(--font-body);
+  cursor: pointer; border: none; transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.btn-gold {
+  background: var(--gold); color: var(--navy-deep);
+}
+.btn-gold:hover { background: #e0ad35; transform: translateY(-1px); }
+.btn-ghost {
+  background: transparent; border: 1px solid var(--gold); color: var(--gold);
+}
+.btn-ghost:hover { background: var(--gold-dim); }
+.btn-danger {
+  background: var(--danger); color: #fff;
+}
+.btn-danger:hover { background: #ef4444; transform: translateY(-1px); }
+.btn-success {
+  background: var(--success); color: var(--navy-deep);
+}
+.btn-success:hover { background: #2dd48e; transform: translateY(-1px); }
+.btn-sm { padding: 6px 14px; font-size: 12px; }
+.btn-icon {
+  padding: 8px; border-radius: 8px; background: transparent; border: none;
+  color: var(--text-secondary); cursor: pointer; display: inline-flex;
+  align-items: center; justify-content: center; transition: all 0.2s ease;
+}
+.btn-icon:hover { color: var(--gold); background: var(--gold-glow); }
+
+/* === Form Elements === */
+.form-group { margin-bottom: 16px; }
+.form-label {
+  display: block; font-size: 11px; text-transform: uppercase;
+  color: var(--text-muted); letter-spacing: 1px; font-weight: 700;
+  margin-bottom: 6px;
+}
+.form-input, .form-select, .form-textarea {
+  width: 100%; background: var(--navy-deep); border: 1px solid var(--border);
+  color: var(--text-primary); border-radius: 8px; font-size: 13px;
+  padding: 12px 16px; font-family: var(--font-body);
+  transition: border-color 0.2s ease;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none; border-color: var(--gold);
+}
+.form-input::placeholder, .form-textarea::placeholder { color: var(--text-muted); }
+.form-select { cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='rgba(255,255,255,0.35)' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  padding-right: 36px;
+}
+.form-select option { background: var(--navy-deep); color: var(--text-primary); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-section-title {
+  font-size: 13px; font-weight: 700; color: var(--gold);
+  margin: 20px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+}
+.form-section-title:first-child { margin-top: 0; }
+.form-check {
+  display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px;
+}
+.form-check input[type="checkbox"] {
+  accent-color: var(--gold); width: 16px; height: 16px; cursor: pointer;
+}
+.form-error { color: var(--danger); font-size: 12px; margin-top: 4px; }
+
+/* === Cards === */
+.card {
+  background: var(--navy-deep); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px;
+}
+
+/* === Tables === */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th {
+  text-align: left; padding: 10px 14px; font-size: 11px;
+  text-transform: uppercase; color: var(--text-muted);
+  letter-spacing: 1px; font-weight: 700; border-bottom: 1px solid var(--border);
+  white-space: nowrap; cursor: pointer; user-select: none;
+}
+th:hover { color: var(--text-secondary); }
+th .sort-arrow { margin-left: 4px; font-size: 10px; }
+td {
+  padding: 12px 14px; border-bottom: 1px solid var(--border);
+  font-size: 13px; color: var(--text-primary); vertical-align: middle;
+}
+tr:hover td { background: rgba(255,255,255,0.02); }
+.td-actions { display: flex; gap: 6px; }
+.td-truncate { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* === Status Badges === */
+.badge {
+  display: inline-block; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 3px 10px; border-radius: 4px;
+}
+.badge-scheduled { border: 1px solid var(--gold); color: var(--gold); background: transparent; }
+.badge-completed { background: var(--success); color: var(--navy-deep); }
+.badge-cancelled { background: var(--danger); color: #fff; opacity: 0.8; }
+.badge-no-show { background: var(--text-muted); color: var(--navy-deep); }
+.badge-admin { background: var(--gold-dim); color: var(--gold); font-size: 10px; }
+.badge-surgeon { color: var(--text-secondary); font-size: 10px; }
+
+/* === Pagination === */
+.pagination {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; margin-top: 20px;
+}
+.pagination button {
+  padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--navy-deep); color: var(--text-secondary);
+  cursor: pointer; font-size: 13px; font-family: var(--font-body);
+  transition: all 0.2s ease;
+}
+.pagination button:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+.pagination button:disabled { opacity: 0.3; cursor: default; }
+.pagination button.active { background: var(--gold); color: var(--navy-deep); border-color: var(--gold); }
+.pagination .page-info { font-size: 12px; color: var(--text-muted); }
+
+/* === Login Screen === */
+#login-screen {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 20px;
+}
+.login-card {
+  text-align: center; max-width: 380px; width: 100%;
+}
+.login-title {
+  font-family: var(--font-display); font-size: 36px; color: var(--gold);
+  margin-bottom: 4px;
+}
+.login-subtitle {
+  font-size: 13px; color: var(--text-muted); margin-bottom: 40px;
+}
+.login-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 32px; border-radius: 8px; font-size: 14px;
+  font-weight: 700; font-family: var(--font-body);
+  cursor: pointer; border: none; background: var(--gold);
+  color: var(--navy-deep); transition: all 0.2s ease;
+}
+.login-btn:hover { background: #e0ad35; transform: translateY(-1px); }
+.login-btn svg { width: 20px; height: 20px; }
+.login-footer {
+  margin-top: 48px; font-size: 11px; color: var(--text-muted);
+}
+
+/* === Deactivated Screen === */
+#deactivated-screen {
+  display: none; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 20px; text-align: center;
+}
+.deactivated-msg { max-width: 400px; }
+.deactivated-msg h2 { color: var(--danger); margin-bottom: 12px; }
+.deactivated-msg p { color: var(--text-secondary); margin-bottom: 24px; }
+
+/* === Offline Banner === */
+#offline-banner {
+  display: none; position: fixed; top: 0; left: 0; right: 0;
+  background: var(--danger); color: #fff; text-align: center;
+  padding: 8px; font-size: 13px; font-weight: 600; z-index: 9999;
+}
+
+/* === App Layout === */
+#app { display: none; min-height: 100vh; }
+#sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0; width: 240px;
+  background: var(--navy-deep); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; z-index: 100;
+  overflow-y: auto;
+}
+.sidebar-brand { padding: 24px 20px 4px; }
+.sidebar-brand h1 {
+  font-family: var(--font-display); font-size: 22px; color: var(--gold);
+}
+.sidebar-brand p {
+  font-size: 11px; color: var(--text-muted); margin-top: 2px;
+}
+.sidebar-nav { flex: 1; padding: 20px 0; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px; margin: 2px 8px; border-radius: 8px;
+  color: var(--text-secondary); font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s ease; border: none;
+  background: none; width: calc(100% - 16px); text-align: left;
+  font-family: var(--font-body); position: relative;
+}
+.nav-item:hover { color: var(--text-primary); background: rgba(255,255,255,0.03); }
+.nav-item.active {
+  color: var(--gold); background: var(--gold-glow);
+}
+.nav-item.active::before {
+  content: ''; position: absolute; left: -8px; top: 4px; bottom: 4px;
+  width: 3px; background: var(--gold); border-radius: 0 2px 2px 0;
+}
+.nav-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+.sidebar-user {
+  padding: 16px 20px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.sidebar-user img {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid var(--border);
+}
+.sidebar-user-info { flex: 1; min-width: 0; }
+.sidebar-user-name {
+  font-size: 13px; font-weight: 600; color: var(--text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sidebar-user-role { font-size: 11px; }
+.sidebar-signout {
+  display: block; width: 100%; text-align: left; padding: 8px 20px;
+  border: none; background: none; color: var(--text-muted);
+  font-size: 12px; cursor: pointer; font-family: var(--font-body);
+  transition: color 0.2s ease;
+}
+.sidebar-signout:hover { color: var(--danger); }
+
+/* === Mobile Header === */
+#mobile-header {
+  display: none; position: fixed; top: 0; left: 0; right: 0;
+  height: 56px; background: var(--navy-deep);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px; align-items: center; justify-content: space-between;
+  z-index: 100;
+}
+#mobile-header h1 {
+  font-family: var(--font-display); font-size: 18px; color: var(--gold);
+}
+.hamburger {
+  background: none; border: none; color: var(--text-primary);
+  cursor: pointer; padding: 8px; display: flex; align-items: center;
+}
+.hamburger svg { width: 24px; height: 24px; }
+
+/* === Mobile Nav Overlay === */
+#mobile-nav {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  z-index: 200;
+}
+#mobile-nav.open { display: flex; }
+#mobile-nav .mobile-nav-panel {
+  width: 280px; background: var(--navy-deep); height: 100%;
+  display: flex; flex-direction: column; animation: slideIn 0.2s ease;
+}
+@keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+#mobile-nav .nav-item { width: calc(100% - 16px); }
+
+/* === Main Content === */
+#main-content {
+  margin-left: 240px; padding: 32px; min-height: 100vh;
+}
+.main-inner { max-width: 1100px; margin: 0 auto; }
+.view { display: none; }
+.view.active { display: block; }
+
+/* === View Header === */
+.view-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+}
+.view-header h2 { font-size: 28px; }
+.view-header-actions { display: flex; gap: 8px; align-items: center; }
+.search-input {
+  background: var(--navy-deep); border: 1px solid var(--border);
+  color: var(--text-primary); border-radius: 8px; font-size: 13px;
+  padding: 10px 16px; font-family: var(--font-body); width: 240px;
+  transition: border-color 0.2s ease;
+}
+.search-input:focus { outline: none; border-color: var(--gold); }
+.search-input::placeholder { color: var(--text-muted); }
+
+/* === Filter Bar === */
+.filter-bar {
+  display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.filter-bar .form-input, .filter-bar .form-select {
+  width: auto; min-width: 140px; padding: 8px 12px; font-size: 12px;
+}
+.filter-bar .form-select { padding-right: 32px; }
+
+/* === Dashboard === */
+.welcome-header { margin-bottom: 28px; }
+.welcome-header h2 { font-size: 28px; margin-bottom: 4px; }
+.welcome-header p { color: var(--text-secondary); font-size: 14px; }
+.stat-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  margin-bottom: 32px;
+}
+.stat-card {
+  background: var(--navy-deep); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px;
+}
+.stat-card-label {
+  font-size: 11px; text-transform: uppercase; color: var(--text-muted);
+  letter-spacing: 1px; font-weight: 700; margin-bottom: 8px;
+}
+.stat-card-value { font-size: 32px; font-weight: 700; color: var(--text-primary); }
+.stat-card-value.warning { color: var(--warning); }
+.stat-card-icon {
+  width: 36px; height: 36px; border-radius: 8px; display: flex;
+  align-items: center; justify-content: center; margin-bottom: 12px;
+  background: var(--gold-dim); color: var(--gold); font-size: 18px;
+}
+.section-title {
+  font-size: 18px; margin-bottom: 16px; display: flex;
+  align-items: center; gap: 8px;
+}
+
+/* === Calendar View === */
+.cal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.cal-header h3 { font-size: 22px; }
+.cal-nav { display: flex; gap: 8px; align-items: center; }
+.cal-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+}
+.cal-day-header {
+  padding: 10px; text-align: center; font-size: 11px;
+  text-transform: uppercase; color: var(--text-muted);
+  font-weight: 700; letter-spacing: 1px; background: var(--navy-deep);
+  border-bottom: 1px solid var(--border);
+}
+.cal-cell {
+  min-height: 100px; padding: 6px; border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border); background: var(--navy);
+  vertical-align: top; cursor: pointer; transition: background 0.15s ease;
+}
+.cal-cell:nth-child(7n) { border-right: none; }
+.cal-cell:hover { background: rgba(255,255,255,0.02); }
+.cal-cell.outside { opacity: 0.3; }
+.cal-cell.today { background: var(--gold-glow); }
+.cal-cell .cal-date {
+  font-size: 12px; font-weight: 600; color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+.cal-cell.today .cal-date { color: var(--gold); font-weight: 700; }
+.cal-pill {
+  display: block; font-size: 10px; padding: 2px 6px; border-radius: 3px;
+  margin-bottom: 2px; white-space: nowrap; overflow: hidden;
+  text-overflow: ellipsis; cursor: pointer; transition: opacity 0.15s ease;
+}
+.cal-pill:hover { opacity: 0.8; }
+.cal-pill.status-scheduled { background: var(--gold-dim); color: var(--gold); }
+.cal-pill.status-completed { background: rgba(52,211,153,0.2); color: var(--success); }
+.cal-pill.status-cancelled { background: rgba(248,113,113,0.2); color: var(--danger); }
+.cal-pill.status-no-show { background: rgba(255,255,255,0.05); color: var(--text-muted); }
+
+.gcal-banner {
+  padding: 14px 20px; border-radius: 10px; margin-bottom: 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+.gcal-banner.disconnected {
+  background: var(--gold-dim); border: 1px solid rgba(212,160,48,0.25);
+}
+.gcal-banner.connected {
+  background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2);
+}
+.gcal-banner p { font-size: 13px; }
+.gcal-banner .connected-text { color: var(--success); }
+
+/* === Settings === */
+.settings-tabs {
+  display: flex; gap: 4px; margin-bottom: 24px;
+  border-bottom: 1px solid var(--border); padding-bottom: 0;
+}
+.settings-tab {
+  padding: 10px 20px; font-size: 13px; font-weight: 600;
+  color: var(--text-secondary); cursor: pointer; border: none;
+  background: none; font-family: var(--font-body);
+  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: all 0.2s ease;
+}
+.settings-tab:hover { color: var(--text-primary); }
+.settings-tab.active {
+  color: var(--gold); border-bottom-color: var(--gold);
+}
+.settings-panel { display: none; }
+.settings-panel.active { display: block; }
+.user-row {
+  display: flex; align-items: center; gap: 12px; padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.user-row img { width: 36px; height: 36px; border-radius: 50%; }
+.user-row-info { flex: 1; min-width: 0; }
+.user-row-name { font-weight: 600; font-size: 14px; }
+.user-row-email { font-size: 12px; color: var(--text-secondary); }
+.user-row-controls { display: flex; gap: 12px; align-items: center; }
+.user-row-controls select { padding: 6px 28px 6px 10px; font-size: 12px; min-width: 100px; }
+.toggle-switch {
+  position: relative; width: 40px; height: 22px; cursor: pointer;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute; inset: 0; background: var(--navy-card);
+  border-radius: 22px; transition: 0.2s; border: 1px solid var(--border);
+}
+.toggle-slider::before {
+  content: ''; position: absolute; width: 16px; height: 16px;
+  left: 2px; bottom: 2px; background: var(--text-muted);
+  border-radius: 50%; transition: 0.2s;
+}
+.toggle-switch input:checked + .toggle-slider { background: var(--gold-dim); border-color: var(--gold); }
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(18px); background: var(--gold);
+}
+.proc-category { margin-bottom: 20px; }
+.proc-category-title {
+  font-size: 13px; font-weight: 700; color: var(--gold);
+  margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+}
+.proc-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; font-size: 13px; border-radius: 6px;
+  transition: background 0.15s ease;
+}
+.proc-item:hover { background: rgba(255,255,255,0.02); }
+.proc-item .badge { font-size: 9px; margin-left: 8px; }
+
+/* === Modal === */
+#modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6); z-index: 500;
+  align-items: center; justify-content: center; padding: 16px;
+}
+#modal-overlay.open { display: flex; }
+#modal-box {
+  background: var(--navy-card); border-radius: 16px;
+  max-width: 600px; width: 100%; max-height: 85vh;
+  overflow-y: auto; animation: modalIn 0.15s ease;
+  position: relative;
+}
+@keyframes modalIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
+}
+.modal-header h3 { font-size: 20px; }
+.modal-close {
+  background: none; border: none; color: var(--text-muted);
+  cursor: pointer; font-size: 20px; padding: 4px; display: flex;
+  align-items: center; justify-content: center; border-radius: 6px;
+  transition: all 0.15s ease;
+}
+.modal-close:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+.modal-body { padding: 20px 24px; }
+.modal-footer {
+  display: flex; justify-content: flex-end; gap: 8px;
+  padding: 16px 24px 20px; border-top: 1px solid var(--border);
+}
+
+/* === Confirmation Dialog === */
+#confirm-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6); z-index: 600;
+  align-items: center; justify-content: center; padding: 16px;
+}
+#confirm-overlay.open { display: flex; }
+#confirm-box {
+  background: var(--navy-card); border-radius: 16px;
+  max-width: 400px; width: 100%; padding: 24px;
+  animation: modalIn 0.15s ease;
+}
+#confirm-box h3 { font-size: 18px; margin-bottom: 8px; }
+#confirm-box p { color: var(--text-secondary); font-size: 14px; margin-bottom: 20px; }
+#confirm-box .confirm-actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+/* === Toast === */
+#toast-container {
+  position: fixed; bottom: 16px; right: 16px; z-index: 700;
+  display: flex; flex-direction: column; gap: 8px; max-width: 360px;
+}
+.toast {
+  background: var(--navy-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 18px; font-size: 13px;
+  animation: toastIn 0.2s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.toast.hide { animation: toastOut 0.2s ease forwards; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes toastOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(10px); } }
+.toast-success { border-left: 3px solid var(--success); }
+.toast-error { border-left: 3px solid var(--danger); }
+.toast-warning { border-left: 3px solid var(--warning); }
+.toast-info { border-left: 3px solid var(--gold); }
+.toast-icon { font-size: 16px; flex-shrink: 0; line-height: 1; }
+.toast-msg { flex: 1; }
+
+/* === Empty State === */
+.empty-state {
+  text-align: center; padding: 48px 20px; color: var(--text-muted);
+}
+.empty-state-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+.empty-state-title {
+  font-size: 16px; font-weight: 600; color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+.empty-state-sub { font-size: 13px; margin-bottom: 16px; }
+
+/* === Loading Spinner === */
+.loading {
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px; color: var(--gold);
+}
+.spinner {
+  width: 28px; height: 28px; border: 3px solid var(--border);
+  border-top-color: var(--gold); border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* === Searchable Dropdown === */
+.search-dropdown { position: relative; }
+.search-dropdown-list {
+  position: absolute; top: 100%; left: 0; right: 0;
+  background: var(--navy-deep); border: 1px solid var(--border);
+  border-top: none; border-radius: 0 0 8px 8px; max-height: 200px;
+  overflow-y: auto; z-index: 50; display: none;
+}
+.search-dropdown-list.open { display: block; }
+.search-dropdown-item {
+  padding: 10px 16px; font-size: 13px; cursor: pointer;
+  transition: background 0.15s ease;
+}
+.search-dropdown-item:hover, .search-dropdown-item.focused {
+  background: var(--gold-glow); color: var(--gold);
+}
+.search-dropdown-item small { color: var(--text-muted); display: block; font-size: 11px; }
+.search-dropdown-empty {
+  padding: 10px 16px; font-size: 12px; color: var(--text-muted);
+}
+
+/* === Responsive === */
+@media (max-width: 767px) {
+  #sidebar { display: none; }
+  #mobile-header { display: flex; }
+  #main-content { margin-left: 0; padding: 72px 16px 16px; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .view-header { flex-direction: column; align-items: stretch; }
+  .view-header-actions { justify-content: stretch; }
+  .search-input { width: 100%; }
+  .form-row { grid-template-columns: 1fr; }
+  .filter-bar { flex-direction: column; align-items: stretch; }
+  .filter-bar .form-input, .filter-bar .form-select { width: 100%; min-width: 0; }
+  #modal-box { max-width: 100%; margin: 8px; max-height: 95vh; border-radius: 12px; }
+  #confirm-box { max-width: 100%; margin: 8px; }
+  .cal-cell { min-height: 60px; padding: 4px; }
+  .cal-pill { font-size: 9px; padding: 1px 4px; }
+  table, thead, tbody, th, td, tr { display: block; }
+  thead { display: none; }
+  tr { margin-bottom: 12px; background: var(--navy-deep); border-radius: 10px; border: 1px solid var(--border); padding: 12px; }
+  td { padding: 4px 0; border: none; display: flex; justify-content: space-between; align-items: center; }
+  td::before { content: attr(data-label); font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px; margin-right: 12px; }
+  .td-actions { justify-content: flex-end; }
+  #toast-container { left: 16px; right: 16px; max-width: none; }
+  .user-row { flex-wrap: wrap; }
+  .user-row-controls { width: 100%; justify-content: flex-end; margin-top: 8px; }
+}
+@media (max-width: 480px) {
+  .stat-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Offline Banner -->
+<div id="offline-banner">You are offline. Changes cannot be saved.</div>
+
+<!-- Login Screen -->
+<div id="login-screen">
+  <div class="login-card">
+    <h1 class="login-title">BCeph Log</h1>
+    <p class="login-subtitle">Surgical Appointment Manager</p>
+    <button id="login-btn" class="login-btn" type="button">
+      <svg viewBox="0 0 24 24" width="20" height="20"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+      Sign in with Google
+    </button>
+    <div class="login-footer">BCeph Log · Bayan Healthcare Analytics</div>
+  </div>
+</div>
+
+<!-- Deactivated Screen -->
+<div id="deactivated-screen">
+  <div class="deactivated-msg">
+    <h2>Account Deactivated</h2>
+    <p>Your account has been deactivated. Contact your administrator.</p>
+    <button id="deactivated-signout" class="btn btn-ghost" type="button">Sign Out</button>
+  </div>
+</div>
+
+<!-- App Shell -->
+<div id="app">
+  <!-- Sidebar (desktop) -->
+  <aside id="sidebar">
+    <div class="sidebar-brand">
+      <h1>BCeph Log</h1>
+      <p>Surgical Appointment Manager</p>
+    </div>
+    <nav class="sidebar-nav" id="sidebar-nav"></nav>
+    <div id="sidebar-user"></div>
+  </aside>
+
+  <!-- Mobile Header -->
+  <header id="mobile-header">
+    <h1>BCeph Log</h1>
+    <button class="hamburger" id="hamburger-btn" type="button" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </header>
+
+  <!-- Mobile Nav Overlay -->
+  <div id="mobile-nav">
+    <div class="mobile-nav-panel">
+      <div class="sidebar-brand" style="padding:20px">
+        <h1>BCeph Log</h1>
+        <p>Surgical Appointment Manager</p>
+      </div>
+      <nav id="mobile-nav-items" style="flex:1;padding:12px 0"></nav>
+      <div id="mobile-user"></div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="main-inner">
+      <div id="view-dashboard" class="view"></div>
+      <div id="view-patients" class="view"></div>
+      <div id="view-appointments" class="view"></div>
+      <div id="view-calendar" class="view"></div>
+      <div id="view-settings" class="view"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal Overlay -->
+<div id="modal-overlay">
+  <div id="modal-box">
+    <div class="modal-header">
+      <h3 id="modal-title"></h3>
+      <button class="modal-close" id="modal-close-btn" type="button" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
+
+<!-- Confirmation Dialog -->
+<div id="confirm-overlay">
+  <div id="confirm-box">
+    <h3 id="confirm-title"></h3>
+    <p id="confirm-msg"></p>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost btn-sm" id="confirm-cancel" type="button">Cancel</button>
+      <button class="btn btn-sm" id="confirm-ok" type="button">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+<script src="https://accounts.google.com/gsi/client" async></script>
+<script type="module">
+// === Firebase SDK Imports ===
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+import {
+  getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, addDoc,
+  query, where, orderBy, limit, onSnapshot, serverTimestamp, writeBatch, Timestamp
+} from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+
+// === Configuration ===
+// REPLACE WITH YOUR FIREBASE CONFIG
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDvTVZY6NBKQ5mFRBmR_IuB9dw5jpMtooo",
+  authDomain: "bceph-log.firebaseapp.com",
+  projectId: "bceph-log",
+  storageBucket: "bceph-log.firebasestorage.app",
+  messagingSenderId: "1081799597775",
+  appId: "1:1081799597775:web:44584a621925bc5df4e1ba"
+};
+
+// REPLACE WITH YOUR GOOGLE CLOUD CREDENTIALS
+const GOOGLE_CONFIG = {
+  clientId: "1081799597775-9dm2hgb7qia12stt0fkj5v9bd0aa9hpv.apps.googleusercontent.com",
+  apiKey: "AIzaSyDvTVZY6NBKQ5mFRBmR_IuB9dw5jpMtooo"
+};
+
+// === Firebase Init ===
+const firebaseApp = initializeApp(FIREBASE_CONFIG);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
+
+// === State ===
+const state = {
+  currentUser: null,
+  currentView: 'dashboard',
+  dashboardUnsubscribe: null,
+  userDocUnsubscribe: null,
+  gcalToken: null,
+  gcalTokenExpiry: 0,
+  gcalConnected: false,
+  gcalEmail: '',
+  tokenClient: null,
+  patientsCache: [],
+  appointmentsCache: [],
+  proceduresCache: [],
+  usersCache: [],
+  patientSort: { field: 'hcNumber', dir: 'asc' },
+  patientSearch: '',
+  patientPage: 1,
+  apptFilters: { dateFrom: '', dateTo: '', status: '', surgeon: '' },
+};
+
+// === Utility Functions ===
+function $(sel) { return document.querySelector(sel); }
+function $$(sel) { return document.querySelectorAll(sel); }
+function show(el) { if (typeof el === 'string') el = $(el); if (el) el.style.display = el.id === 'app' ? 'block' : ''; }
+function hide(el) { if (typeof el === 'string') el = $(el); if (el) el.style.display = 'none'; }
+
+function debounce(fn, ms) {
+  let t;
+  return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  const dt = typeof d === 'string' ? new Date(d + 'T00:00:00') : d;
+  return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(dt);
+}
+
+function formatTime(t) {
+  if (!t) return '';
+  const [h, m] = t.split(':');
+  const dt = new Date(); dt.setHours(+h, +m);
+  return new Intl.DateTimeFormat('en', { hour: 'numeric', minute: '2-digit' }).format(dt);
+}
+
+function formatFullDate(d) {
+  return new Intl.DateTimeFormat('en', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(d);
+}
+
+function todayStr() { return new Date().toISOString().split('T')[0]; }
+
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+
+function escapeHtml(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function statusBadge(status) {
+  const labels = { scheduled: 'Scheduled', completed: 'Completed', cancelled: 'Cancelled', 'no-show': 'No-Show' };
+  return `<span class="badge badge-${status}">${labels[status] || status}</span>`;
+}
+
+// === Toast Notifications ===
+function toast(msg, type = 'info') {
+  const icons = { success: '&#10003;', error: '&#10007;', warning: '&#9888;', info: '&#8505;' };
+  const container = $('#toast-container');
+  const el = document.createElement('div');
+  el.className = `toast toast-${type}`;
+  el.innerHTML = `<span class="toast-icon">${icons[type]}</span><span class="toast-msg">${escapeHtml(msg)}</span>`;
+  container.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('hide');
+    setTimeout(() => el.remove(), 200);
+  }, 4000);
+}
+
+// === Modal ===
+function openModal(title, bodyHtml, footerHtml) {
+  $('#modal-title').textContent = title;
+  $('#modal-body').innerHTML = bodyHtml;
+  $('#modal-footer').innerHTML = footerHtml;
+  $('#modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  const first = $('#modal-body input, #modal-body select, #modal-body textarea');
+  if (first) setTimeout(() => first.focus(), 50);
+}
+
+function closeModal() {
+  $('#modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+$('#modal-close-btn').addEventListener('click', closeModal);
+$('#modal-overlay').addEventListener('click', (e) => { if (e.target === $('#modal-overlay')) closeModal(); });
+
+// === Confirmation Dialog ===
+let confirmResolve = null;
+function confirm(title, msg, btnLabel = 'Confirm', btnClass = 'btn-danger') {
+  return new Promise((resolve) => {
+    confirmResolve = resolve;
+    $('#confirm-title').textContent = title;
+    $('#confirm-msg').textContent = msg;
+    const okBtn = $('#confirm-ok');
+    okBtn.textContent = btnLabel;
+    okBtn.className = `btn btn-sm ${btnClass}`;
+    $('#confirm-overlay').classList.add('open');
+  });
+}
+
+$('#confirm-ok').addEventListener('click', () => {
+  $('#confirm-overlay').classList.remove('open');
+  if (confirmResolve) confirmResolve(true);
+});
+$('#confirm-cancel').addEventListener('click', () => {
+  $('#confirm-overlay').classList.remove('open');
+  if (confirmResolve) confirmResolve(false);
+});
+$('#confirm-overlay').addEventListener('click', (e) => {
+  if (e.target === $('#confirm-overlay')) {
+    $('#confirm-overlay').classList.remove('open');
+    if (confirmResolve) confirmResolve(false);
+  }
+});
+
+// Escape key handling
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if ($('#confirm-overlay').classList.contains('open')) {
+      $('#confirm-overlay').classList.remove('open');
+      if (confirmResolve) confirmResolve(false);
+    } else if ($('#modal-overlay').classList.contains('open')) {
+      closeModal();
+    } else if ($('#mobile-nav').classList.contains('open')) {
+      $('#mobile-nav').classList.remove('open');
+    }
+  }
+});
+
+// === SVG Icons ===
+const icons = {
+  dashboard: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="7" height="7" rx="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5"/></svg>',
+  patients: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="6" r="3"/><path d="M2 18c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M14 7.5a2.5 2.5 0 100-5"/><path d="M15 11c2.5 0 4.5 2 4.5 4.5"/></svg>',
+  appointments: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="3" width="16" height="15" rx="2"/><path d="M2 8h16"/><path d="M6 1v4M14 1v4"/><path d="M7 12.5l2 2 4-4"/></svg>',
+  calendar: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="3" width="16" height="15" rx="2"/><path d="M2 8h16"/><path d="M6 1v4M14 1v4"/></svg>',
+  settings: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="2.5"/><path d="M10 1.5v2.5M10 16v2.5M1.5 10H4M16 10h2.5M3.8 3.8l1.8 1.8M14.4 14.4l1.8 1.8M3.8 16.2l1.8-1.8M14.4 5.6l1.8-1.8"/></svg>',
+};
+
+// === Navigation ===
+const navItems = [
+  { id: 'dashboard', label: 'Dashboard', icon: icons.dashboard },
+  { id: 'patients', label: 'Patients', icon: icons.patients },
+  { id: 'appointments', label: 'Appointments', icon: icons.appointments },
+  { id: 'calendar', label: 'Calendar', icon: icons.calendar },
+  { id: 'settings', label: 'Settings', icon: icons.settings, adminOnly: true },
+];
+
+function buildNav(container, isMobile) {
+  container.innerHTML = '';
+  navItems.forEach(item => {
+    if (item.adminOnly && state.currentUser?.role !== 'admin') return;
+    const btn = document.createElement('button');
+    btn.className = 'nav-item' + (state.currentView === item.id ? ' active' : '');
+    btn.setAttribute('data-view', item.id);
+    btn.innerHTML = `${item.icon}<span>${item.label}</span>`;
+    btn.addEventListener('click', () => {
+      navigateTo(item.id);
+      if (isMobile) $('#mobile-nav').classList.remove('open');
+    });
+    container.appendChild(btn);
+  });
+}
+
+function buildSidebarUser(container) {
+  if (!state.currentUser) return;
+  const u = state.currentUser;
+  container.innerHTML = `
+    <div class="sidebar-user">
+      <img src="${escapeHtml(u.photoURL || '')}" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2232%22 height=%2232%22><rect fill=%22%231a2d4d%22 width=%2232%22 height=%2232%22 rx=%2216%22/><text x=%2216%22 y=%2221%22 text-anchor=%22middle%22 fill=%22%23D4A030%22 font-size=%2214%22>${escapeHtml((u.displayName || '?')[0])}</text></svg>'">
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name">${escapeHtml(u.displayName)}</div>
+        <span class="sidebar-user-role ${u.role === 'admin' ? 'badge-admin' : 'badge-surgeon'}">${u.role === 'admin' ? 'Admin' : 'Surgeon'}</span>
+      </div>
+    </div>
+    <button class="sidebar-signout" type="button">Sign Out</button>
+  `;
+  container.querySelector('.sidebar-signout').addEventListener('click', doSignOut);
+}
+
+function navigateTo(view) {
+  state.currentView = view;
+  window.location.hash = view;
+  $$('.view').forEach(v => v.classList.remove('active'));
+  const viewEl = $(`#view-${view}`);
+  if (viewEl) viewEl.classList.add('active');
+  $$('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.getAttribute('data-view') === view);
+  });
+  renderView(view);
+}
+
+function renderView(view) {
+  switch (view) {
+    case 'dashboard': renderDashboard(); break;
+    case 'patients': renderPatients(); break;
+    case 'appointments': renderAppointments(); break;
+    case 'calendar': renderCalendar(); break;
+    case 'settings': renderSettings(); break;
+  }
+}
+
+window.addEventListener('hashchange', () => {
+  const hash = window.location.hash.replace('#', '') || 'dashboard';
+  if (hash !== state.currentView && state.currentUser) navigateTo(hash);
+});
+
+// === Default Procedures ===
+const DEFAULT_PROCEDURES = [
+  { name: 'Simple Extraction', category: 'Extractions' },
+  { name: 'Surgical Extraction', category: 'Extractions' },
+  { name: 'Impacted Third Molar Extraction', category: 'Extractions' },
+  { name: 'Residual Root Extraction', category: 'Extractions' },
+  { name: 'Implant Placement', category: 'Implantology' },
+  { name: 'Implant Exposure (Stage 2)', category: 'Implantology' },
+  { name: 'Bone Grafting', category: 'Implantology' },
+  { name: 'Sinus Lift', category: 'Implantology' },
+  { name: 'Apicoectomy', category: 'Endodontic Surgery' },
+  { name: 'Root Amputation', category: 'Endodontic Surgery' },
+  { name: 'Hemisection', category: 'Endodontic Surgery' },
+  { name: 'Frenectomy', category: 'Soft Tissue Surgery' },
+  { name: 'Gingivectomy', category: 'Soft Tissue Surgery' },
+  { name: 'Incision & Drainage (Abscess)', category: 'Soft Tissue Surgery' },
+  { name: 'Biopsy (Soft Tissue)', category: 'Soft Tissue Surgery' },
+  { name: 'Excision of Mucocele/Ranula', category: 'Soft Tissue Surgery' },
+  { name: 'Operculectomy', category: 'Soft Tissue Surgery' },
+  { name: 'Cyst Enucleation', category: 'Hard Tissue / Pathology' },
+  { name: 'Cyst Marsupialization', category: 'Hard Tissue / Pathology' },
+  { name: 'Biopsy (Hard Tissue)', category: 'Hard Tissue / Pathology' },
+  { name: 'Alveoloplasty', category: 'Hard Tissue / Pathology' },
+  { name: 'Torus Removal', category: 'Hard Tissue / Pathology' },
+  { name: 'Tuberosity Reduction', category: 'Pre-Prosthetic Surgery' },
+  { name: 'Epulis Removal', category: 'Pre-Prosthetic Surgery' },
+  { name: 'Ridge Augmentation', category: 'Pre-Prosthetic Surgery' },
+  { name: 'Tooth Reimplantation', category: 'Trauma' },
+  { name: 'Splinting', category: 'Trauma' },
+  { name: 'Fracture Wiring (Intermaxillary Fixation)', category: 'Trauma' },
+  { name: 'Other (free text)', category: 'Other' },
+];
+
+const ANESTHESIA_OPTIONS = [
+  'Local Anesthesia (Infiltration)',
+  'Local Anesthesia (Block)',
+  'Topical Anesthesia',
+  'General Anesthesia',
+  'Conscious Sedation',
+  'None',
+];
+
+// === Firestore Helpers ===
+async function seedProcedures() {
+  const snap = await getDocs(collection(db, 'procedures'));
+  if (snap.size > 0) return;
+  const batch = writeBatch(db);
+  DEFAULT_PROCEDURES.forEach(p => {
+    const ref = doc(collection(db, 'procedures'));
+    batch.set(ref, { name: p.name, category: p.category, isDefault: true, addedBy: null, createdAt: serverTimestamp() });
+  });
+  await batch.commit();
+}
+
+async function fetchProcedures() {
+  const snap = await getDocs(query(collection(db, 'procedures'), orderBy('category'), orderBy('name')));
+  state.proceduresCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  return state.proceduresCache;
+}
+
+async function fetchUsers() {
+  const snap = await getDocs(collection(db, 'users'));
+  state.usersCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  return state.usersCache;
+}
+
+async function fetchPatients() {
+  let q;
+  if (state.currentUser.role === 'admin') {
+    q = query(collection(db, 'patients'));
+  } else {
+    q = query(collection(db, 'patients'), where('createdBy', '==', state.currentUser.uid));
+  }
+  const snap = await getDocs(q);
+  state.patientsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  return state.patientsCache;
+}
+
+async function fetchAppointments() {
+  const uid = state.currentUser.uid;
+  if (state.currentUser.role === 'admin') {
+    const snap = await getDocs(collection(db, 'appointments'));
+    state.appointmentsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } else {
+    const snap1 = await getDocs(query(collection(db, 'appointments'), where('surgeon', '==', uid)));
+    const snap2 = await getDocs(query(collection(db, 'appointments'), where('createdBy', '==', uid)));
+    const map = new Map();
+    snap1.docs.forEach(d => map.set(d.id, { id: d.id, ...d.data() }));
+    snap2.docs.forEach(d => map.set(d.id, { id: d.id, ...d.data() }));
+    state.appointmentsCache = Array.from(map.values());
+  }
+  return state.appointmentsCache;
+}
+
+async function fetchAppointmentsForPatient(patientId) {
+  const snap = await getDocs(query(collection(db, 'appointments'), where('patientId', '==', patientId)));
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+// === Auth ===
+async function handleAuthUser(user) {
+  if (!user) {
+    state.currentUser = null;
+    hide('#app'); hide('#deactivated-screen');
+    show('#login-screen');
+    if (state.dashboardUnsubscribe) { state.dashboardUnsubscribe(); state.dashboardUnsubscribe = null; }
+    if (state.userDocUnsubscribe) { state.userDocUnsubscribe(); state.userDocUnsubscribe = null; }
+    return;
+  }
+
+  hide('#login-screen');
+
+  const userRef = doc(db, 'users', user.uid);
+  const userSnap = await getDoc(userRef);
+
+  let role = 'surgeon';
+  let isNew = false;
+
+  if (!userSnap.exists()) {
+    const allUsers = await getDocs(collection(db, 'users'));
+    if (allUsers.size === 0) role = 'admin';
+    isNew = true;
+    await setDoc(userRef, {
+      email: user.email,
+      displayName: user.displayName || user.email,
+      photoURL: user.photoURL || '',
+      role,
+      active: true,
+      createdAt: serverTimestamp(),
+      lastLogin: serverTimestamp(),
+    });
+    if (role === 'admin') await seedProcedures();
+  } else {
+    const data = userSnap.data();
+    role = data.role;
+    if (!data.active) {
+      hide('#login-screen'); hide('#app');
+      $('#deactivated-screen').style.display = 'flex';
+      return;
+    }
+    await updateDoc(userRef, { lastLogin: serverTimestamp() });
+  }
+
+  state.currentUser = {
+    uid: user.uid,
+    email: user.email,
+    displayName: user.displayName || user.email,
+    photoURL: user.photoURL || '',
+    role,
+  };
+
+  setupUserDocListener(user.uid);
+  show('#app'); hide('#login-screen'); hide('#deactivated-screen');
+  buildNav($('#sidebar-nav'), false);
+  buildNav($('#mobile-nav-items'), true);
+  buildSidebarUser($('#sidebar-user'));
+  buildSidebarUser($('#mobile-user'));
+
+  const hash = window.location.hash.replace('#', '') || 'dashboard';
+  navigateTo(hash);
+}
+
+function setupUserDocListener(uid) {
+  if (state.userDocUnsubscribe) state.userDocUnsubscribe();
+  state.userDocUnsubscribe = onSnapshot(doc(db, 'users', uid), (snap) => {
+    if (!snap.exists()) return;
+    const data = snap.data();
+    if (!data.active) {
+      hide('#app');
+      $('#deactivated-screen').style.display = 'flex';
+      return;
+    }
+    if (data.role !== state.currentUser.role) {
+      state.currentUser.role = data.role;
+      buildNav($('#sidebar-nav'), false);
+      buildNav($('#mobile-nav-items'), true);
+      buildSidebarUser($('#sidebar-user'));
+      buildSidebarUser($('#mobile-user'));
+      if (state.currentView === 'settings' && data.role !== 'admin') navigateTo('dashboard');
+    }
+  });
+}
+
+$('#login-btn').addEventListener('click', async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+  } catch (e) {
+    if (e.code !== 'auth/popup-closed-by-user') toast('Sign-in failed: ' + e.message, 'error');
+  }
+});
+
+async function doSignOut() {
+  if (state.gcalToken) {
+    try { google.accounts.oauth2.revoke(state.gcalToken); } catch {}
+    state.gcalToken = null; state.gcalTokenExpiry = 0;
+    state.gcalConnected = false; state.gcalEmail = '';
+  }
+  if (state.dashboardUnsubscribe) { state.dashboardUnsubscribe(); state.dashboardUnsubscribe = null; }
+  if (state.userDocUnsubscribe) { state.userDocUnsubscribe(); state.userDocUnsubscribe = null; }
+  await signOut(auth);
+}
+
+$('#deactivated-signout').addEventListener('click', doSignOut);
+
+onAuthStateChanged(auth, handleAuthUser);
+
+// === Mobile Nav ===
+$('#hamburger-btn').addEventListener('click', () => $('#mobile-nav').classList.add('open'));
+$('#mobile-nav').addEventListener('click', (e) => {
+  if (e.target === $('#mobile-nav')) $('#mobile-nav').classList.remove('open');
+});
+
+// === Offline Detection ===
+window.addEventListener('offline', () => { $('#offline-banner').style.display = 'block'; });
+window.addEventListener('online', () => { $('#offline-banner').style.display = 'none'; });
+
+// === Google Calendar ===
+function initGCal() {
+  if (typeof google === 'undefined' || !google.accounts) {
+    setTimeout(initGCal, 500);
+    return;
+  }
+  state.tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CONFIG.clientId,
+    scope: 'https://www.googleapis.com/auth/calendar.events',
+    callback: (resp) => {
+      if (resp.error) { toast('Google Calendar auth failed', 'error'); return; }
+      state.gcalToken = resp.access_token;
+      state.gcalTokenExpiry = Date.now() + resp.expires_in * 1000;
+      state.gcalConnected = true;
+      fetchGCalEmail();
+      if (state.currentUser) {
+        updateDoc(doc(db, 'users', state.currentUser.uid), {
+          calendarConnected: true
+        });
+      }
+      toast('Google Calendar connected', 'success');
+      if (state.currentView === 'calendar') renderCalendar();
+    },
+  });
+}
+
+async function fetchGCalEmail() {
+  try {
+    const r = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary', {
+      headers: { Authorization: `Bearer ${state.gcalToken}` }
+    });
+    if (r.ok) {
+      const data = await r.json();
+      state.gcalEmail = data.id || '';
+      if (state.currentUser) {
+        updateDoc(doc(db, 'users', state.currentUser.uid), { calendarEmail: state.gcalEmail });
+      }
+    }
+  } catch {}
+}
+
+function connectGCal() {
+  if (!state.tokenClient) { toast('Google services not loaded yet', 'warning'); return; }
+  state.tokenClient.requestAccessToken({ prompt: 'consent' });
+}
+
+function disconnectGCal() {
+  if (state.gcalToken) {
+    try { google.accounts.oauth2.revoke(state.gcalToken); } catch {}
+  }
+  state.gcalToken = null; state.gcalTokenExpiry = 0;
+  state.gcalConnected = false; state.gcalEmail = '';
+  if (state.currentUser) {
+    updateDoc(doc(db, 'users', state.currentUser.uid), { calendarConnected: false, calendarEmail: '' });
+  }
+  toast('Google Calendar disconnected', 'info');
+  if (state.currentView === 'calendar') renderCalendar();
+}
+
+async function ensureGCalToken() {
+  if (!state.gcalConnected) return false;
+  if (Date.now() < state.gcalTokenExpiry - 60000) return true;
+  return new Promise((resolve) => {
+    const origCb = state.tokenClient.callback;
+    state.tokenClient.callback = (resp) => {
+      if (resp.error) { resolve(false); return; }
+      state.gcalToken = resp.access_token;
+      state.gcalTokenExpiry = Date.now() + resp.expires_in * 1000;
+      resolve(true);
+    };
+    state.tokenClient.requestAccessToken({ prompt: '' });
+    setTimeout(() => { state.tokenClient.callback = origCb; }, 100);
+  });
+}
+
+async function gcalCreate(appt) {
+  if (!(await ensureGCalToken())) return null;
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const start = `${appt.date}T${appt.time}:00`;
+  const endDate = new Date(start);
+  endDate.setMinutes(endDate.getMinutes() + (appt.duration || 30));
+  const end = endDate.toISOString().replace('Z', '').split('.')[0];
+  const body = {
+    summary: `${appt.procedure} — ${appt.patientName} (HC: ${appt.patientHcNumber})`,
+    description: `Surgeon: ${appt.surgeonName}\nTooth #: ${appt.toothNumber || 'N/A'}\nAnesthesia: ${appt.anesthesia}\n\nPre-Op Notes:\n${appt.preOpNotes || 'None'}`,
+    start: { dateTime: start, timeZone: tz },
+    end: { dateTime: end, timeZone: tz },
+    reminders: { useDefault: false, overrides: [{ method: 'popup', minutes: 60 }] },
+  };
+  try {
+    const r = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+      method: 'POST', headers: { Authorization: `Bearer ${state.gcalToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (r.status === 401) {
+      if (await ensureGCalToken()) {
+        const r2 = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+          method: 'POST', headers: { Authorization: `Bearer ${state.gcalToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        if (r2.ok) { const d = await r2.json(); return d.id; }
+      }
+      return null;
+    }
+    if (r.ok) { const d = await r.json(); return d.id; }
+  } catch { }
+  return null;
+}
+
+async function gcalUpdate(eventId, appt) {
+  if (!(await ensureGCalToken())) return false;
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const start = `${appt.date}T${appt.time}:00`;
+  const endDate = new Date(start);
+  endDate.setMinutes(endDate.getMinutes() + (appt.duration || 30));
+  const end = endDate.toISOString().replace('Z', '').split('.')[0];
+  const body = {
+    summary: `${appt.procedure} — ${appt.patientName} (HC: ${appt.patientHcNumber})`,
+    description: `Surgeon: ${appt.surgeonName}\nTooth #: ${appt.toothNumber || 'N/A'}\nAnesthesia: ${appt.anesthesia}\n\nPre-Op Notes:\n${appt.preOpNotes || 'None'}`,
+    start: { dateTime: start, timeZone: tz },
+    end: { dateTime: end, timeZone: tz },
+    reminders: { useDefault: false, overrides: [{ method: 'popup', minutes: 60 }] },
+  };
+  try {
+    const r = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}`, {
+      method: 'PUT', headers: { Authorization: `Bearer ${state.gcalToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (r.status === 404) { toast('Calendar event was deleted externally.', 'info'); return 'not_found'; }
+    if (r.ok) return true;
+  } catch { }
+  return false;
+}
+
+async function gcalDelete(eventId) {
+  if (!(await ensureGCalToken())) return false;
+  try {
+    const r = await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}`, {
+      method: 'DELETE', headers: { Authorization: `Bearer ${state.gcalToken}` },
+    });
+    if (r.status === 404) { toast('Calendar event was deleted externally.', 'info'); return true; }
+    return r.ok || r.status === 204;
+  } catch { }
+  return false;
+}
+
+// === Dashboard View ===
+function setupDashboardListener() {
+  if (state.dashboardUnsubscribe) state.dashboardUnsubscribe();
+  const today = todayStr();
+  let q;
+  if (state.currentUser.role === 'admin') {
+    q = query(collection(db, 'appointments'), where('date', '==', today));
+  } else {
+    q = query(collection(db, 'appointments'), where('date', '==', today), where('surgeon', '==', state.currentUser.uid));
+  }
+  state.dashboardUnsubscribe = onSnapshot(q, () => {
+    if (state.currentView === 'dashboard') renderDashboard();
+  });
+}
+
+async function renderDashboard() {
+  const container = $('#view-dashboard');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+  try {
+    const [patients, appointments] = await Promise.all([fetchPatients(), fetchAppointments()]);
+    const today = todayStr();
+    const todayAppts = appointments.filter(a => a.date === today && a.status === 'scheduled').sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+
+    const now = new Date();
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    const monStr = monday.toISOString().split('T')[0];
+    const sunStr = sunday.toISOString().split('T')[0];
+    const weekAppts = appointments.filter(a => a.date >= monStr && a.date <= sunStr);
+    const pendingPostOp = appointments.filter(a => a.status === 'completed' && !a.postOpNotes);
+
+    const recentPatients = [...patients].sort((a, b) => {
+      const ta = a.createdAt?.seconds || 0;
+      const tb = b.createdAt?.seconds || 0;
+      return tb - ta;
+    }).slice(0, 5);
+
+    container.innerHTML = `
+      <div class="welcome-header">
+        <h2>${getGreeting()}, ${escapeHtml((state.currentUser.displayName || '').split(' ')[0])}</h2>
+        <p>${formatFullDate(new Date())}</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-card-icon">&#128197;</div>
+          <div class="stat-card-label">Today's Appointments</div>
+          <div class="stat-card-value">${todayAppts.length}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon">&#128101;</div>
+          <div class="stat-card-label">Total Patients</div>
+          <div class="stat-card-value">${patients.length}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon">&#128198;</div>
+          <div class="stat-card-label">This Week</div>
+          <div class="stat-card-value">${weekAppts.length}</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon">&#9888;</div>
+          <div class="stat-card-label">Pending Post-Op Notes</div>
+          <div class="stat-card-value ${pendingPostOp.length > 0 ? 'warning' : ''}">${pendingPostOp.length}</div>
+        </div>
+      </div>
+      <div class="section-title">Today's Schedule</div>
+      <div class="card" style="margin-bottom:28px">
+        ${todayAppts.length === 0 ? '<div class="empty-state"><div class="empty-state-icon">&#128197;</div><div class="empty-state-title">No appointments scheduled for today.</div></div>' : `
+          <div class="table-wrap"><table>
+            <thead><tr><th>Time</th><th>Patient</th><th>Procedure</th><th>Surgeon</th><th>Status</th></tr></thead>
+            <tbody>
+              ${todayAppts.map(a => `
+                <tr class="appt-row" data-id="${a.id}" style="cursor:pointer">
+                  <td data-label="Time">${formatTime(a.time)}</td>
+                  <td data-label="Patient">${escapeHtml(a.patientName)} <small style="color:var(--text-muted)">(${escapeHtml(a.patientHcNumber)})</small></td>
+                  <td data-label="Procedure">${escapeHtml(a.procedure)}</td>
+                  <td data-label="Surgeon">${escapeHtml(a.surgeonName)}</td>
+                  <td data-label="Status">${statusBadge(a.status)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table></div>
+        `}
+      </div>
+      <div class="section-title">Recent Patients</div>
+      <div class="card">
+        ${recentPatients.length === 0 ? '<div class="empty-state"><div class="empty-state-icon">&#128203;</div><div class="empty-state-title">No patients yet</div></div>' : `
+          <div class="table-wrap"><table>
+            <thead><tr><th>HC #</th><th>Name</th><th>Created</th></tr></thead>
+            <tbody>
+              ${recentPatients.map(p => `
+                <tr class="patient-row" data-id="${p.id}" style="cursor:pointer">
+                  <td data-label="HC #"><strong>${escapeHtml(p.hcNumber)}</strong></td>
+                  <td data-label="Name">${escapeHtml(p.fullName)}</td>
+                  <td data-label="Created">${p.createdAt ? formatDate(new Date(p.createdAt.seconds * 1000)) : ''}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table></div>
+        `}
+      </div>
+    `;
+
+    container.querySelectorAll('.appt-row').forEach(row => {
+      row.addEventListener('click', () => openAppointmentModal(row.dataset.id));
+    });
+    container.querySelectorAll('.patient-row').forEach(row => {
+      row.addEventListener('click', () => openPatientDetail(row.dataset.id));
+    });
+
+    setupDashboardListener();
+  } catch (e) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-title">Error loading dashboard</div><div class="empty-state-sub">${escapeHtml(e.message)}</div></div>`;
+  }
+}
+
+// === Patients View ===
+async function renderPatients() {
+  const container = $('#view-patients');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  try {
+    await fetchPatients();
+    renderPatientsContent(container);
+  } catch (e) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-title">Error loading patients</div></div>`;
+  }
+}
+
+function renderPatientsContent(container) {
+  let patients = [...state.patientsCache];
+
+  if (state.patientSearch) {
+    const s = state.patientSearch.toLowerCase();
+    patients = patients.filter(p =>
+      (p.hcNumber || '').toLowerCase().includes(s) ||
+      (p.fullName || '').toLowerCase().includes(s)
+    );
+  }
+
+  patients.sort((a, b) => {
+    const f = state.patientSort.field;
+    let va = (a[f] || ''), vb = (b[f] || '');
+    if (f === 'createdAt') { va = a.createdAt?.seconds || 0; vb = b.createdAt?.seconds || 0; }
+    if (typeof va === 'string') { va = va.toLowerCase(); vb = vb.toLowerCase(); }
+    const cmp = va < vb ? -1 : va > vb ? 1 : 0;
+    return state.patientSort.dir === 'asc' ? cmp : -cmp;
+  });
+
+  const perPage = 25;
+  const totalPages = Math.max(1, Math.ceil(patients.length / perPage));
+  state.patientPage = Math.min(state.patientPage, totalPages);
+  const start = (state.patientPage - 1) * perPage;
+  const pagePatients = patients.slice(start, start + perPage);
+
+  const sortArrow = (field) => {
+    if (state.patientSort.field !== field) return '';
+    return `<span class="sort-arrow">${state.patientSort.dir === 'asc' ? '&#9650;' : '&#9660;'}</span>`;
+  };
+
+  container.innerHTML = `
+    <div class="view-header">
+      <h2>Patients</h2>
+      <div class="view-header-actions">
+        <input type="text" class="search-input" id="patient-search" placeholder="Search by HC# or name..." value="${escapeHtml(state.patientSearch)}">
+        <button class="btn btn-gold" id="new-patient-btn" type="button">+ New Patient</button>
+      </div>
+    </div>
+    ${patients.length === 0 && !state.patientSearch ? `
+      <div class="empty-state">
+        <div class="empty-state-icon">&#128203;</div>
+        <div class="empty-state-title">No patients yet</div>
+        <div class="empty-state-sub">Register your first patient to get started</div>
+        <button class="btn btn-gold" id="empty-new-patient" type="button">+ New Patient</button>
+      </div>
+    ` : patients.length === 0 ? '<div class="empty-state"><div class="empty-state-title">No matching patients</div></div>' : `
+      <div class="card">
+        <div class="table-wrap"><table>
+          <thead><tr>
+            <th data-sort="hcNumber">HC Number ${sortArrow('hcNumber')}</th>
+            <th data-sort="fullName">Full Name ${sortArrow('fullName')}</th>
+            <th>Phone</th>
+            <th>Notes</th>
+            <th data-sort="createdAt">Created ${sortArrow('createdAt')}</th>
+            <th>Actions</th>
+          </tr></thead>
+          <tbody>
+            ${pagePatients.map(p => `
+              <tr>
+                <td data-label="HC #"><strong>${escapeHtml(p.hcNumber)}</strong></td>
+                <td data-label="Name">${escapeHtml(p.fullName)}</td>
+                <td data-label="Phone">${escapeHtml(p.phone || '—')}</td>
+                <td data-label="Notes" class="td-truncate">${escapeHtml(p.notes || '—')}</td>
+                <td data-label="Created">${p.createdAt ? formatDate(new Date(p.createdAt.seconds * 1000)) : ''}</td>
+                <td data-label="Actions"><div class="td-actions">
+                  <button class="btn btn-ghost btn-sm view-patient-btn" data-id="${p.id}" type="button">View</button>
+                  <button class="btn btn-ghost btn-sm edit-patient-btn" data-id="${p.id}" type="button">Edit</button>
+                </div></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table></div>
+        ${totalPages > 1 ? `
+          <div class="pagination">
+            <button id="prev-page" ${state.patientPage <= 1 ? 'disabled' : ''} type="button">&lt; Prev</button>
+            <span class="page-info">Page ${state.patientPage} of ${totalPages}</span>
+            <button id="next-page" ${state.patientPage >= totalPages ? 'disabled' : ''} type="button">Next &gt;</button>
+          </div>
+        ` : ''}
+      </div>
+    `}
+  `;
+
+  const searchInput = $('#patient-search');
+  if (searchInput) {
+    searchInput.addEventListener('input', debounce((e) => {
+      state.patientSearch = e.target.value;
+      state.patientPage = 1;
+      renderPatientsContent(container);
+    }, 300));
+  }
+
+  container.querySelector('#new-patient-btn')?.addEventListener('click', () => openPatientModal());
+  container.querySelector('#empty-new-patient')?.addEventListener('click', () => openPatientModal());
+
+  container.querySelectorAll('th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+      const field = th.dataset.sort;
+      if (state.patientSort.field === field) {
+        state.patientSort.dir = state.patientSort.dir === 'asc' ? 'desc' : 'asc';
+      } else {
+        state.patientSort = { field, dir: 'asc' };
+      }
+      renderPatientsContent(container);
+    });
+  });
+
+  container.querySelectorAll('.view-patient-btn').forEach(btn => {
+    btn.addEventListener('click', () => openPatientDetail(btn.dataset.id));
+  });
+  container.querySelectorAll('.edit-patient-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = state.patientsCache.find(x => x.id === btn.dataset.id);
+      if (p) openPatientModal(p);
+    });
+  });
+
+  container.querySelector('#prev-page')?.addEventListener('click', () => { state.patientPage--; renderPatientsContent(container); });
+  container.querySelector('#next-page')?.addEventListener('click', () => { state.patientPage++; renderPatientsContent(container); });
+}
+
+function openPatientModal(patient = null) {
+  const isEdit = !!patient;
+  const body = `
+    <div class="form-group">
+      <label class="form-label">HC Number *</label>
+      <input type="text" class="form-input" id="pm-hc" value="${escapeHtml(patient?.hcNumber || '')}" required>
+      <div class="form-error" id="pm-hc-error"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Full Name *</label>
+      <input type="text" class="form-input" id="pm-name" value="${escapeHtml(patient?.fullName || '')}" required>
+      <div class="form-error" id="pm-name-error"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Phone</label>
+      <input type="text" class="form-input" id="pm-phone" value="${escapeHtml(patient?.phone || '')}">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notes</label>
+      <textarea class="form-textarea" id="pm-notes">${escapeHtml(patient?.notes || '')}</textarea>
+    </div>
+  `;
+  const footer = `
+    <button class="btn btn-ghost" id="pm-cancel" type="button">Cancel</button>
+    <button class="btn btn-gold" id="pm-save" type="button">${isEdit ? 'Update Patient' : 'Save Patient'}</button>
+  `;
+  openModal(isEdit ? 'Edit Patient' : 'New Patient', body, footer);
+
+  $('#pm-cancel').addEventListener('click', closeModal);
+  $('#pm-save').addEventListener('click', async () => {
+    const hc = $('#pm-hc').value.trim();
+    const name = $('#pm-name').value.trim();
+    const phone = $('#pm-phone').value.trim();
+    const notes = $('#pm-notes').value.trim();
+
+    $('#pm-hc-error').textContent = '';
+    $('#pm-name-error').textContent = '';
+
+    if (!hc) { $('#pm-hc-error').textContent = 'HC Number is required'; return; }
+    if (!name || name.length < 2) { $('#pm-name-error').textContent = 'Name is required (min 2 characters)'; return; }
+
+    const dupQuery = query(collection(db, 'patients'), where('hcNumber', '==', hc));
+    const dupSnap = await getDocs(dupQuery);
+    const isDup = dupSnap.docs.some(d => d.id !== patient?.id);
+    if (isDup) { $('#pm-hc-error').textContent = 'A patient with this HC# already exists'; return; }
+
+    try {
+      if (isEdit) {
+        const oldHc = patient.hcNumber;
+        const oldName = patient.fullName;
+        await updateDoc(doc(db, 'patients', patient.id), {
+          hcNumber: hc, fullName: name, phone, notes, updatedAt: serverTimestamp()
+        });
+        if (hc !== oldHc || name !== oldName) {
+          const apptSnap = await getDocs(query(collection(db, 'appointments'), where('patientId', '==', patient.id)));
+          if (apptSnap.size > 0) {
+            const batch = writeBatch(db);
+            apptSnap.docs.forEach(d => {
+              batch.update(d.ref, { patientHcNumber: hc, patientName: name, updatedAt: serverTimestamp() });
+            });
+            await batch.commit();
+          }
+        }
+        toast('Patient updated', 'success');
+      } else {
+        await addDoc(collection(db, 'patients'), {
+          hcNumber: hc, fullName: name, phone, notes,
+          createdBy: state.currentUser.uid,
+          createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+        });
+        toast('Patient registered', 'success');
+      }
+      closeModal();
+      renderPatients();
+    } catch (e) {
+      toast('Error saving patient: ' + e.message, 'error');
+    }
+  });
+}
+
+async function openPatientDetail(patientId) {
+  const patient = state.patientsCache.find(p => p.id === patientId);
+  if (!patient) { toast('Patient not found', 'error'); return; }
+
+  const appts = await fetchAppointmentsForPatient(patientId);
+  appts.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+  const body = `
+    <div style="margin-bottom:16px">
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <div><span class="form-label" style="margin-bottom:2px">HC Number</span><div style="font-weight:700;font-size:16px;color:var(--gold)">${escapeHtml(patient.hcNumber)}</div></div>
+        <div><span class="form-label" style="margin-bottom:2px">Full Name</span><div style="font-weight:600">${escapeHtml(patient.fullName)}</div></div>
+        ${patient.phone ? `<div><span class="form-label" style="margin-bottom:2px">Phone</span><div>${escapeHtml(patient.phone)}</div></div>` : ''}
+      </div>
+      ${patient.notes ? `<div style="margin-top:12px"><span class="form-label" style="margin-bottom:2px">Notes</span><div style="color:var(--text-secondary);font-size:13px">${escapeHtml(patient.notes)}</div></div>` : ''}
+    </div>
+    <div class="form-section-title">Appointment History</div>
+    ${appts.length === 0 ? '<div class="empty-state" style="padding:20px"><div class="empty-state-title">No appointments</div></div>' : `
+      <div class="table-wrap"><table>
+        <thead><tr><th>Date</th><th>Procedure</th><th>Surgeon</th><th>Status</th></tr></thead>
+        <tbody>${appts.map(a => `
+          <tr class="detail-appt-row" data-id="${a.id}" style="cursor:pointer">
+            <td data-label="Date">${formatDate(a.date)}</td>
+            <td data-label="Procedure">${escapeHtml(a.procedure)}</td>
+            <td data-label="Surgeon">${escapeHtml(a.surgeonName)}</td>
+            <td data-label="Status">${statusBadge(a.status)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    `}
+  `;
+  const footer = `
+    <button class="btn btn-ghost" id="pd-close" type="button">Close</button>
+    <button class="btn btn-gold" id="pd-new-appt" type="button">+ New Appointment</button>
+  `;
+  openModal(`Patient: ${patient.fullName}`, body, footer);
+
+  $('#pd-close').addEventListener('click', closeModal);
+  $('#pd-new-appt').addEventListener('click', () => {
+    closeModal();
+    openAppointmentModal(null, patient);
+  });
+  document.querySelectorAll('.detail-appt-row').forEach(row => {
+    row.addEventListener('click', () => {
+      closeModal();
+      setTimeout(() => openAppointmentModal(row.dataset.id), 200);
+    });
+  });
+}
+
+// === Appointments View ===
+async function renderAppointments() {
+  const container = $('#view-appointments');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  try {
+    await Promise.all([fetchAppointments(), fetchUsers()]);
+    renderAppointmentsContent(container);
+  } catch {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Error loading appointments</div></div>';
+  }
+}
+
+function renderAppointmentsContent(container) {
+  let appts = [...state.appointmentsCache];
+  const f = state.apptFilters;
+
+  if (f.dateFrom) appts = appts.filter(a => a.date >= f.dateFrom);
+  if (f.dateTo) appts = appts.filter(a => a.date <= f.dateTo);
+  if (f.status) appts = appts.filter(a => a.status === f.status);
+  if (f.surgeon) appts = appts.filter(a => a.surgeon === f.surgeon);
+
+  const today = todayStr();
+  appts.sort((a, b) => {
+    const aFuture = a.date >= today ? 0 : 1;
+    const bFuture = b.date >= today ? 0 : 1;
+    if (aFuture !== bFuture) return aFuture - bFuture;
+    if (aFuture === 0) return (a.date + a.time).localeCompare(b.date + b.time);
+    return (b.date + b.time).localeCompare(a.date + a.time);
+  });
+
+  const surgeons = state.usersCache.filter(u => u.active !== false);
+
+  container.innerHTML = `
+    <div class="view-header">
+      <h2>Appointments</h2>
+      <div class="view-header-actions">
+        <button class="btn btn-gold" id="new-appt-btn" type="button">+ New Appointment</button>
+      </div>
+    </div>
+    <div class="filter-bar">
+      <input type="date" class="form-input" id="filter-from" value="${f.dateFrom}" placeholder="From">
+      <input type="date" class="form-input" id="filter-to" value="${f.dateTo}" placeholder="To">
+      <select class="form-select" id="filter-status">
+        <option value="">All Statuses</option>
+        <option value="scheduled" ${f.status === 'scheduled' ? 'selected' : ''}>Scheduled</option>
+        <option value="completed" ${f.status === 'completed' ? 'selected' : ''}>Completed</option>
+        <option value="cancelled" ${f.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+        <option value="no-show" ${f.status === 'no-show' ? 'selected' : ''}>No-Show</option>
+      </select>
+      ${state.currentUser.role === 'admin' ? `
+        <select class="form-select" id="filter-surgeon">
+          <option value="">All Surgeons</option>
+          ${surgeons.map(s => `<option value="${s.id}" ${f.surgeon === s.id ? 'selected' : ''}>${escapeHtml(s.displayName)}</option>`).join('')}
+        </select>
+      ` : ''}
+    </div>
+    ${appts.length === 0 ? `
+      <div class="empty-state">
+        <div class="empty-state-icon">&#128197;</div>
+        <div class="empty-state-title">No appointments found</div>
+        <div class="empty-state-sub">Create a new appointment to get started</div>
+      </div>
+    ` : `
+      <div class="card"><div class="table-wrap"><table>
+        <thead><tr><th>Date & Time</th><th>Patient</th><th>Procedure</th><th>Tooth #</th><th>Surgeon</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+          ${appts.map(a => `
+            <tr>
+              <td data-label="Date & Time">${formatDate(a.date)} ${formatTime(a.time)}</td>
+              <td data-label="Patient">${escapeHtml(a.patientName)} <small style="color:var(--text-muted)">(${escapeHtml(a.patientHcNumber)})</small></td>
+              <td data-label="Procedure">${escapeHtml(a.procedure)}</td>
+              <td data-label="Tooth #">${escapeHtml(a.toothNumber || '—')}</td>
+              <td data-label="Surgeon">${escapeHtml(a.surgeonName)}</td>
+              <td data-label="Status">${statusBadge(a.status)}</td>
+              <td data-label="Actions"><div class="td-actions">
+                <button class="btn btn-ghost btn-sm edit-appt-btn" data-id="${a.id}" type="button">View/Edit</button>
+                ${a.status === 'scheduled' ? `<button class="btn btn-success btn-sm complete-appt-btn" data-id="${a.id}" type="button">Complete</button>` : ''}
+              </div></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table></div></div>
+    `}
+  `;
+
+  container.querySelector('#new-appt-btn')?.addEventListener('click', () => openAppointmentModal());
+
+  const applyFilter = () => {
+    state.apptFilters = {
+      dateFrom: container.querySelector('#filter-from')?.value || '',
+      dateTo: container.querySelector('#filter-to')?.value || '',
+      status: container.querySelector('#filter-status')?.value || '',
+      surgeon: container.querySelector('#filter-surgeon')?.value || '',
+    };
+    renderAppointmentsContent(container);
+  };
+  container.querySelector('#filter-from')?.addEventListener('change', applyFilter);
+  container.querySelector('#filter-to')?.addEventListener('change', applyFilter);
+  container.querySelector('#filter-status')?.addEventListener('change', applyFilter);
+  container.querySelector('#filter-surgeon')?.addEventListener('change', applyFilter);
+
+  container.querySelectorAll('.edit-appt-btn').forEach(btn => {
+    btn.addEventListener('click', () => openAppointmentModal(btn.dataset.id));
+  });
+  container.querySelectorAll('.complete-appt-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const appt = state.appointmentsCache.find(a => a.id === btn.dataset.id);
+      if (!appt) return;
+      openCompleteModal(appt);
+    });
+  });
+}
+
+function openCompleteModal(appt) {
+  const body = `
+    <p style="margin-bottom:16px;color:var(--text-secondary)">Mark <strong>${escapeHtml(appt.procedure)}</strong> for <strong>${escapeHtml(appt.patientName)}</strong> as completed.</p>
+    <div class="form-group">
+      <label class="form-label">Post-Op Notes</label>
+      <textarea class="form-textarea" id="complete-notes" placeholder="Enter post-operative notes...">${escapeHtml(appt.postOpNotes || '')}</textarea>
+    </div>
+  `;
+  const footer = `
+    <button class="btn btn-ghost" id="complete-cancel" type="button">Cancel</button>
+    <button class="btn btn-success" id="complete-save" type="button">Mark Completed</button>
+  `;
+  openModal('Complete Appointment', body, footer);
+  $('#complete-cancel').addEventListener('click', closeModal);
+  $('#complete-save').addEventListener('click', async () => {
+    const notes = $('#complete-notes').value.trim();
+    try {
+      await updateDoc(doc(db, 'appointments', appt.id), {
+        status: 'completed', postOpNotes: notes, updatedAt: serverTimestamp()
+      });
+      toast('Appointment marked as completed', 'success');
+      closeModal();
+      renderAppointments();
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  });
+}
+
+async function openAppointmentModal(apptId = null, presetPatient = null) {
+  let appt = null;
+  if (apptId) {
+    appt = state.appointmentsCache.find(a => a.id === apptId);
+    if (!appt) {
+      const snap = await getDoc(doc(db, 'appointments', apptId));
+      if (snap.exists()) appt = { id: snap.id, ...snap.data() };
+    }
+  }
+
+  const procs = state.proceduresCache.length ? state.proceduresCache : await fetchProcedures();
+  const users = state.usersCache.length ? state.usersCache : await fetchUsers();
+  const surgeons = users.filter(u => u.active !== false);
+
+  const grouped = {};
+  procs.forEach(p => { (grouped[p.category] = grouped[p.category] || []).push(p); });
+
+  const isEdit = !!appt;
+  const selectedPatient = presetPatient || (appt ? { id: appt.patientId, hcNumber: appt.patientHcNumber, fullName: appt.patientName } : null);
+
+  const body = `
+    <div class="form-section-title" style="margin-top:0">Patient & Schedule</div>
+    <div class="form-group search-dropdown">
+      <label class="form-label">Patient *</label>
+      <input type="text" class="form-input" id="am-patient-search"
+        placeholder="Search by HC# or name..."
+        value="${selectedPatient ? escapeHtml(selectedPatient.fullName + ' (' + selectedPatient.hcNumber + ')') : ''}" autocomplete="off">
+      <input type="hidden" id="am-patient-id" value="${selectedPatient?.id || ''}">
+      <div class="search-dropdown-list" id="am-patient-list"></div>
+      <div class="form-error" id="am-patient-error"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Date *</label>
+        <input type="date" class="form-input" id="am-date" value="${appt?.date || todayStr()}">
+        <div class="form-error" id="am-date-error"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Time *</label>
+        <input type="time" class="form-input" id="am-time" value="${appt?.time || '09:00'}">
+        <div class="form-error" id="am-time-error"></div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Duration (minutes)</label>
+      <input type="number" class="form-input" id="am-duration" value="${appt?.duration || 30}" min="5" step="5">
+    </div>
+
+    <div class="form-section-title">Procedure Details</div>
+    <div class="form-group">
+      <label class="form-label">Procedure *</label>
+      <select class="form-select" id="am-procedure">
+        <option value="">Select a procedure</option>
+        ${Object.entries(grouped).map(([cat, items]) => `
+          <optgroup label="${escapeHtml(cat)}">
+            ${items.map(p => `<option value="${escapeHtml(p.name)}" ${appt?.procedure === p.name ? 'selected' : ''}>${escapeHtml(p.name)}</option>`).join('')}
+          </optgroup>
+        `).join('')}
+      </select>
+      <div class="form-error" id="am-procedure-error"></div>
+    </div>
+    <div class="form-group" id="am-custom-proc-group" style="display:none">
+      <label class="form-label">Custom Procedure Name *</label>
+      <input type="text" class="form-input" id="am-custom-procedure" value="${appt?.procedure && !procs.find(p => p.name === appt.procedure) ? escapeHtml(appt.procedure) : ''}">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Tooth Number (FDI)</label>
+        <input type="text" class="form-input" id="am-tooth" placeholder="e.g., 36 or 11,21" value="${escapeHtml(appt?.toothNumber || '')}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Anesthesia *</label>
+        <select class="form-select" id="am-anesthesia">
+          <option value="">Select anesthesia</option>
+          ${ANESTHESIA_OPTIONS.map(a => `<option value="${escapeHtml(a)}" ${appt?.anesthesia === a ? 'selected' : ''}>${escapeHtml(a)}</option>`).join('')}
+        </select>
+        <div class="form-error" id="am-anesthesia-error"></div>
+      </div>
+    </div>
+
+    <div class="form-section-title">Surgeon & Notes</div>
+    <div class="form-group">
+      <label class="form-label">Surgeon *</label>
+      <select class="form-select" id="am-surgeon">
+        ${surgeons.map(s => `<option value="${s.id}" ${(appt?.surgeon || state.currentUser.uid) === s.id ? 'selected' : ''}>${escapeHtml(s.displayName)}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Pre-Op Notes</label>
+      <textarea class="form-textarea" id="am-preop">${escapeHtml(appt?.preOpNotes || '')}</textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Post-Op Notes</label>
+      <textarea class="form-textarea" id="am-postop">${escapeHtml(appt?.postOpNotes || '')}</textarea>
+    </div>
+
+    <div class="form-section-title">Google Calendar</div>
+    <label class="form-check">
+      <input type="checkbox" id="am-gcal" ${state.gcalConnected ? 'checked' : ''} ${!state.gcalConnected ? 'disabled' : ''}>
+      Sync to Google Calendar ${!state.gcalConnected ? '<small style="color:var(--text-muted)">(connect in Calendar view)</small>' : ''}
+    </label>
+  `;
+
+  let footerHtml = '<button class="btn btn-ghost" id="am-cancel" type="button">Cancel</button>';
+  if (isEdit && appt.status === 'scheduled') {
+    footerHtml += '<button class="btn btn-danger btn-sm" id="am-cancel-appt" type="button">Cancel Appointment</button>';
+    footerHtml += '<button class="btn btn-success btn-sm" id="am-complete" type="button">Mark Complete</button>';
+  }
+  footerHtml += `<button class="btn btn-gold" id="am-save" type="button">${isEdit ? 'Update Appointment' : 'Save Appointment'}</button>`;
+
+  openModal(isEdit ? 'Edit Appointment' : 'New Appointment', body, footerHtml);
+
+  // Patient searchable dropdown
+  const patientInput = $('#am-patient-search');
+  const patientList = $('#am-patient-list');
+  let dropdownFocusIdx = -1;
+
+  const searchPatients = debounce(async (term) => {
+    if (!term || term.length < 1) { patientList.classList.remove('open'); return; }
+    const t = term.toLowerCase();
+    let results;
+    if (state.patientsCache.length > 0) {
+      results = state.patientsCache.filter(p =>
+        p.hcNumber.toLowerCase().includes(t) || p.fullName.toLowerCase().includes(t)
+      ).slice(0, 10);
+    } else {
+      await fetchPatients();
+      results = state.patientsCache.filter(p =>
+        p.hcNumber.toLowerCase().includes(t) || p.fullName.toLowerCase().includes(t)
+      ).slice(0, 10);
+    }
+    if (results.length === 0) {
+      patientList.innerHTML = '<div class="search-dropdown-empty">No patients found</div>';
+    } else {
+      patientList.innerHTML = results.map((p, i) =>
+        `<div class="search-dropdown-item" data-idx="${i}" data-id="${p.id}" data-hc="${escapeHtml(p.hcNumber)}" data-name="${escapeHtml(p.fullName)}">${escapeHtml(p.fullName)} <small>HC: ${escapeHtml(p.hcNumber)}</small></div>`
+      ).join('');
+    }
+    dropdownFocusIdx = -1;
+    patientList.classList.add('open');
+  }, 300);
+
+  patientInput.addEventListener('input', (e) => {
+    $('#am-patient-id').value = '';
+    searchPatients(e.target.value);
+  });
+  patientInput.addEventListener('keydown', (e) => {
+    const items = patientList.querySelectorAll('.search-dropdown-item');
+    if (e.key === 'ArrowDown') { e.preventDefault(); dropdownFocusIdx = Math.min(dropdownFocusIdx + 1, items.length - 1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); dropdownFocusIdx = Math.max(dropdownFocusIdx - 1, 0); }
+    else if (e.key === 'Enter' && dropdownFocusIdx >= 0) { e.preventDefault(); items[dropdownFocusIdx]?.click(); }
+    else if (e.key === 'Escape') { patientList.classList.remove('open'); }
+    items.forEach((it, i) => it.classList.toggle('focused', i === dropdownFocusIdx));
+  });
+  patientList.addEventListener('click', (e) => {
+    const item = e.target.closest('.search-dropdown-item');
+    if (!item) return;
+    $('#am-patient-id').value = item.dataset.id;
+    patientInput.value = `${item.dataset.name} (${item.dataset.hc})`;
+    patientList.classList.remove('open');
+  });
+
+  // Custom procedure toggle
+  const procSelect = $('#am-procedure');
+  const customProcGroup = $('#am-custom-proc-group');
+  procSelect.addEventListener('change', () => {
+    customProcGroup.style.display = procSelect.value === 'Other (free text)' ? '' : 'none';
+  });
+  if (appt?.procedure && !procs.find(p => p.name === appt.procedure)) {
+    procSelect.value = 'Other (free text)';
+    customProcGroup.style.display = '';
+  }
+
+  // Footer buttons
+  $('#am-cancel').addEventListener('click', closeModal);
+
+  if (isEdit && appt.status === 'scheduled') {
+    $('#am-cancel-appt')?.addEventListener('click', async () => {
+      const ok = await confirm('Cancel Appointment', 'Are you sure you want to cancel this appointment?', 'Cancel Appointment', 'btn-danger');
+      if (!ok) return;
+      try {
+        if (appt.calendarEventId) await gcalDelete(appt.calendarEventId);
+        await updateDoc(doc(db, 'appointments', appt.id), {
+          status: 'cancelled', calendarEventId: null, updatedAt: serverTimestamp()
+        });
+        toast('Appointment cancelled', 'success');
+        closeModal();
+        if (state.currentView === 'appointments') renderAppointments();
+        else if (state.currentView === 'dashboard') renderDashboard();
+      } catch (e) { toast('Error: ' + e.message, 'error'); }
+    });
+
+    $('#am-complete')?.addEventListener('click', () => {
+      closeModal();
+      setTimeout(() => openCompleteModal(appt), 200);
+    });
+  }
+
+  $('#am-save').addEventListener('click', async () => {
+    const patientId = $('#am-patient-id').value;
+    const date = $('#am-date').value;
+    const time = $('#am-time').value;
+    const duration = parseInt($('#am-duration').value) || 30;
+    let procedure = procSelect.value;
+    if (procedure === 'Other (free text)') procedure = $('#am-custom-procedure').value.trim();
+    const tooth = $('#am-tooth').value.trim();
+    const anesthesia = $('#am-anesthesia').value;
+    const surgeonId = $('#am-surgeon').value;
+    const preOp = $('#am-preop').value.trim();
+    const postOp = $('#am-postop').value.trim();
+    const syncGcal = $('#am-gcal').checked;
+
+    // Validation
+    let valid = true;
+    ['#am-patient-error', '#am-date-error', '#am-time-error', '#am-procedure-error', '#am-anesthesia-error'].forEach(s => { const el = $(s); if (el) el.textContent = ''; });
+
+    if (!patientId) { $('#am-patient-error').textContent = 'Please select a patient'; valid = false; }
+    if (!date) { $('#am-date-error').textContent = 'Date is required'; valid = false; }
+    if (!time) { $('#am-time-error').textContent = 'Time is required'; valid = false; }
+    if (!procedure) { $('#am-procedure-error').textContent = 'Procedure is required'; valid = false; }
+    if (!anesthesia) { $('#am-anesthesia-error').textContent = 'Anesthesia type is required'; valid = false; }
+    if (!valid) return;
+
+    const surgeon = surgeons.find(s => s.id === surgeonId);
+    const patientData = state.patientsCache.find(p => p.id === patientId);
+
+    const apptData = {
+      patientId,
+      patientHcNumber: patientData?.hcNumber || appt?.patientHcNumber || '',
+      patientName: patientData?.fullName || appt?.patientName || '',
+      date, time, duration, procedure,
+      toothNumber: tooth,
+      anesthesia,
+      surgeon: surgeonId,
+      surgeonName: surgeon?.displayName || '',
+      preOpNotes: preOp,
+      postOpNotes: postOp,
+      status: appt?.status || 'scheduled',
+      updatedAt: serverTimestamp(),
+    };
+
+    try {
+      let apptRef;
+      if (isEdit) {
+        apptRef = doc(db, 'appointments', appt.id);
+        await updateDoc(apptRef, apptData);
+        if (syncGcal && state.gcalConnected) {
+          if (appt.calendarEventId) {
+            const result = await gcalUpdate(appt.calendarEventId, { ...apptData, ...appt, ...apptData });
+            if (result === 'not_found') {
+              await updateDoc(apptRef, { calendarEventId: null });
+            }
+          } else {
+            const eventId = await gcalCreate(apptData);
+            if (eventId) await updateDoc(apptRef, { calendarEventId: eventId });
+          }
+        }
+      } else {
+        apptData.createdBy = state.currentUser.uid;
+        apptData.createdAt = serverTimestamp();
+        apptData.calendarEventId = null;
+        const newRef = await addDoc(collection(db, 'appointments'), apptData);
+        if (syncGcal && state.gcalConnected) {
+          const eventId = await gcalCreate(apptData);
+          if (eventId) await updateDoc(newRef, { calendarEventId: eventId });
+          else toast('Appointment saved but calendar sync failed. Will retry on next edit.', 'warning');
+        }
+      }
+      toast(isEdit ? 'Appointment updated' : 'Appointment created', 'success');
+      closeModal();
+      if (state.currentView === 'appointments') renderAppointments();
+      else if (state.currentView === 'dashboard') renderDashboard();
+      else if (state.currentView === 'calendar') renderCalendar();
+    } catch (e) { toast('Error saving: ' + e.message, 'error'); }
+  });
+}
+
+// === Calendar View ===
+let calYear, calMonth;
+
+async function renderCalendar() {
+  const container = $('#view-calendar');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+  const now = new Date();
+  if (calYear === undefined) { calYear = now.getFullYear(); calMonth = now.getMonth(); }
+
+  try {
+    await fetchAppointments();
+    renderCalendarContent(container);
+  } catch {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Error loading calendar</div></div>';
+  }
+}
+
+function renderCalendarContent(container) {
+  const now = new Date();
+  const todayDate = now.getDate();
+  const todayMonth = now.getMonth();
+  const todayYear = now.getFullYear();
+
+  const firstDay = new Date(calYear, calMonth, 1);
+  const lastDay = new Date(calYear, calMonth + 1, 0);
+  const daysInMonth = lastDay.getDate();
+  let startDow = firstDay.getDay();
+  startDow = startDow === 0 ? 6 : startDow - 1; // Monday=0
+
+  const prevMonthLast = new Date(calYear, calMonth, 0).getDate();
+  const monthName = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric' }).format(firstDay);
+
+  const gcalBanner = state.gcalConnected ? `
+    <div class="gcal-banner connected">
+      <p class="connected-text">&#10003; Connected to Google Calendar${state.gcalEmail ? ` (${escapeHtml(state.gcalEmail)})` : ''}</p>
+      <button class="btn btn-ghost btn-sm" id="gcal-disconnect" type="button">Disconnect</button>
+    </div>
+  ` : `
+    <div class="gcal-banner disconnected">
+      <p>Connect Google Calendar for two-way appointment sync</p>
+      <button class="btn btn-gold btn-sm" id="gcal-connect" type="button">Connect Google Calendar</button>
+    </div>
+  `;
+
+  const dayHeaders = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(d =>
+    `<div class="cal-day-header">${d}</div>`
+  ).join('');
+
+  let cells = '';
+  const totalCells = Math.ceil((startDow + daysInMonth) / 7) * 7;
+
+  for (let i = 0; i < totalCells; i++) {
+    let day, month = calMonth, year = calYear, outside = false;
+    if (i < startDow) {
+      day = prevMonthLast - startDow + i + 1;
+      month = calMonth - 1; outside = true;
+      if (month < 0) { month = 11; year--; }
+    } else if (i >= startDow + daysInMonth) {
+      day = i - startDow - daysInMonth + 1;
+      month = calMonth + 1; outside = true;
+      if (month > 11) { month = 0; year++; }
+    } else {
+      day = i - startDow + 1;
+    }
+
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const isToday = day === todayDate && month === todayMonth && year === todayYear;
+    const dayAppts = state.appointmentsCache.filter(a => a.date === dateStr);
+
+    const pills = dayAppts.slice(0, 3).map(a =>
+      `<span class="cal-pill status-${a.status}" data-id="${a.id}" title="${escapeHtml(a.procedure)} — ${escapeHtml(a.patientName)}">${formatTime(a.time)} ${escapeHtml(a.patientName.split(' ')[0])}</span>`
+    ).join('');
+    const more = dayAppts.length > 3 ? `<span style="font-size:10px;color:var(--text-muted)">+${dayAppts.length - 3} more</span>` : '';
+
+    cells += `<div class="cal-cell${outside ? ' outside' : ''}${isToday ? ' today' : ''}" data-date="${dateStr}">
+      <div class="cal-date">${day}</div>${pills}${more}
+    </div>`;
+  }
+
+  container.innerHTML = `
+    ${gcalBanner}
+    <div class="cal-header">
+      <h3>${monthName}</h3>
+      <div class="cal-nav">
+        <button class="btn btn-ghost btn-sm" id="cal-today" type="button">Today</button>
+        <button class="btn-icon" id="cal-prev" type="button" aria-label="Previous month">&#9664;</button>
+        <button class="btn-icon" id="cal-next" type="button" aria-label="Next month">&#9654;</button>
+      </div>
+    </div>
+    <div class="cal-grid">${dayHeaders}${cells}</div>
+  `;
+
+  container.querySelector('#gcal-connect')?.addEventListener('click', connectGCal);
+  container.querySelector('#gcal-disconnect')?.addEventListener('click', async () => {
+    const ok = await confirm('Disconnect Calendar', 'Disconnect Google Calendar?', 'Disconnect', 'btn-danger');
+    if (ok) disconnectGCal();
+  });
+
+  container.querySelector('#cal-prev')?.addEventListener('click', () => {
+    calMonth--;
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    renderCalendarContent(container);
+  });
+  container.querySelector('#cal-next')?.addEventListener('click', () => {
+    calMonth++;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    renderCalendarContent(container);
+  });
+  container.querySelector('#cal-today')?.addEventListener('click', () => {
+    calYear = todayYear; calMonth = todayMonth;
+    renderCalendarContent(container);
+  });
+
+  container.querySelectorAll('.cal-pill').forEach(pill => {
+    pill.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openAppointmentModal(pill.dataset.id);
+    });
+  });
+}
+
+// === Settings View (Admin) ===
+async function renderSettings() {
+  const container = $('#view-settings');
+  if (state.currentUser.role !== 'admin') {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Access denied</div><div class="empty-state-sub">Admin privileges required.</div></div>';
+    return;
+  }
+  container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  try {
+    await Promise.all([fetchUsers(), fetchProcedures()]);
+    renderSettingsContent(container);
+  } catch {
+    container.innerHTML = '<div class="empty-state"><div class="empty-state-title">Error loading settings</div></div>';
+  }
+}
+
+let settingsTab = 'users';
+
+function renderSettingsContent(container) {
+  const users = state.usersCache;
+  const procs = state.proceduresCache;
+  const grouped = {};
+  procs.forEach(p => { (grouped[p.category] = grouped[p.category] || []).push(p); });
+  const categories = Object.keys(grouped).sort();
+
+  container.innerHTML = `
+    <div class="view-header"><h2>Settings</h2></div>
+    <div class="settings-tabs">
+      <button class="settings-tab ${settingsTab === 'users' ? 'active' : ''}" data-tab="users" type="button">Manage Users</button>
+      <button class="settings-tab ${settingsTab === 'procedures' ? 'active' : ''}" data-tab="procedures" type="button">Manage Procedures</button>
+    </div>
+    <div class="settings-panel ${settingsTab === 'users' ? 'active' : ''}" id="panel-users">
+      ${users.map(u => `
+        <div class="user-row">
+          <img src="${escapeHtml(u.photoURL || '')}" alt="" onerror="this.style.display='none'">
+          <div class="user-row-info">
+            <div class="user-row-name">${escapeHtml(u.displayName)}</div>
+            <div class="user-row-email">${escapeHtml(u.email)}${u.lastLogin ? ` · Last login: ${formatDate(new Date(u.lastLogin.seconds * 1000))}` : ''}</div>
+          </div>
+          <div class="user-row-controls">
+            <select class="form-select role-select" data-uid="${u.id}" ${u.id === state.currentUser.uid ? 'disabled title="Cannot change own role"' : ''}>
+              <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+              <option value="surgeon" ${u.role === 'surgeon' ? 'selected' : ''}>Surgeon</option>
+            </select>
+            <label class="toggle-switch" ${u.id === state.currentUser.uid ? 'title="Cannot deactivate yourself"' : ''}>
+              <input type="checkbox" class="active-toggle" data-uid="${u.id}" ${u.active !== false ? 'checked' : ''} ${u.id === state.currentUser.uid ? 'disabled' : ''}>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="settings-panel ${settingsTab === 'procedures' ? 'active' : ''}" id="panel-procedures">
+      <div class="card" style="margin-bottom:20px;padding:16px">
+        <div style="font-weight:700;font-size:13px;margin-bottom:12px;color:var(--gold)">Add Procedure</div>
+        <div class="form-row" style="align-items:end">
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Procedure Name</label>
+            <input type="text" class="form-input" id="new-proc-name" placeholder="Procedure name">
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Category</label>
+            <select class="form-select" id="new-proc-cat">
+              ${categories.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('')}
+              <option value="__new__">+ New Category</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" id="new-cat-group" style="display:none;margin-top:12px;margin-bottom:0">
+          <label class="form-label">New Category Name</label>
+          <input type="text" class="form-input" id="new-cat-name" placeholder="Category name">
+        </div>
+        <button class="btn btn-gold btn-sm" id="add-proc-btn" type="button" style="margin-top:12px">Add Procedure</button>
+      </div>
+      ${categories.map(cat => `
+        <div class="proc-category">
+          <div class="proc-category-title">${escapeHtml(cat)}</div>
+          ${grouped[cat].map(p => `
+            <div class="proc-item">
+              <span>${escapeHtml(p.name)} ${p.isDefault ? '<span class="badge badge-scheduled" style="font-size:9px">Default</span>' : ''}</span>
+              ${!p.isDefault ? `<button class="btn-icon del-proc-btn" data-id="${p.id}" title="Delete procedure" type="button">&#10005;</button>` : ''}
+            </div>
+          `).join('')}
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  // Tabs
+  container.querySelectorAll('.settings-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      settingsTab = tab.dataset.tab;
+      renderSettingsContent(container);
+    });
+  });
+
+  // Role changes
+  container.querySelectorAll('.role-select').forEach(sel => {
+    sel.addEventListener('change', async (e) => {
+      const uid = sel.dataset.uid;
+      const newRole = sel.value;
+      const ok = await confirm('Change Role', `Change this user's role to ${newRole}?`, 'Change Role', 'btn-gold');
+      if (!ok) {
+        sel.value = sel.value === 'admin' ? 'surgeon' : 'admin';
+        return;
+      }
+      try {
+        await updateDoc(doc(db, 'users', uid), { role: newRole });
+        toast('Role updated', 'success');
+        await fetchUsers();
+        renderSettingsContent(container);
+      } catch (e) { toast('Error: ' + e.message, 'error'); }
+    });
+  });
+
+  // Active toggles
+  container.querySelectorAll('.active-toggle').forEach(toggle => {
+    toggle.addEventListener('change', async () => {
+      const uid = toggle.dataset.uid;
+      const active = toggle.checked;
+      if (!active) {
+        const ok = await confirm('Deactivate User', 'This user will be locked out. Continue?', 'Deactivate', 'btn-danger');
+        if (!ok) { toggle.checked = true; return; }
+      }
+      try {
+        await updateDoc(doc(db, 'users', uid), { active });
+        toast(active ? 'User activated' : 'User deactivated', 'success');
+      } catch (e) { toast('Error: ' + e.message, 'error'); toggle.checked = !active; }
+    });
+  });
+
+  // New category toggle
+  container.querySelector('#new-proc-cat')?.addEventListener('change', (e) => {
+    container.querySelector('#new-cat-group').style.display = e.target.value === '__new__' ? '' : 'none';
+  });
+
+  // Add procedure
+  container.querySelector('#add-proc-btn')?.addEventListener('click', async () => {
+    const name = container.querySelector('#new-proc-name').value.trim();
+    let cat = container.querySelector('#new-proc-cat').value;
+    if (cat === '__new__') cat = container.querySelector('#new-cat-name').value.trim();
+    if (!name || !cat) { toast('Name and category are required', 'warning'); return; }
+    try {
+      await addDoc(collection(db, 'procedures'), {
+        name, category: cat, isDefault: false,
+        addedBy: state.currentUser.uid, createdAt: serverTimestamp()
+      });
+      toast('Procedure added', 'success');
+      await fetchProcedures();
+      renderSettingsContent(container);
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  });
+
+  // Delete procedure
+  container.querySelectorAll('.del-proc-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const ok = await confirm('Delete Procedure', 'Delete this custom procedure?', 'Delete', 'btn-danger');
+      if (!ok) return;
+      try {
+        await deleteDoc(doc(db, 'procedures', btn.dataset.id));
+        toast('Procedure deleted', 'success');
+        await fetchProcedures();
+        renderSettingsContent(container);
+      } catch (e) { toast('Error: ' + e.message, 'error'); }
+    });
+  });
+}
+
+// === Init ===
+initGCal();
+</script>
+</body>
+</html>
