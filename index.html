@@ -851,8 +851,9 @@ $('#modal-overlay').addEventListener('click', (e) => { if (e.target === $('#moda
 
 // === Confirmation Dialog ===
 let confirmResolve = null;
-function confirm(title, msg, btnLabel = 'Confirm', btnClass = 'btn-danger') {
+function showConfirm(title, msg, btnLabel = 'Confirm', btnClass = 'btn-danger') {
   return new Promise((resolve) => {
+    if (confirmResolve) confirmResolve(false);
     confirmResolve = resolve;
     $('#confirm-title').textContent = title;
     $('#confirm-msg').textContent = msg;
@@ -1251,13 +1252,13 @@ async function ensureGCalToken() {
   return new Promise((resolve) => {
     const origCb = state.tokenClient.callback;
     state.tokenClient.callback = (resp) => {
+      state.tokenClient.callback = origCb;
       if (resp.error) { resolve(false); return; }
       state.gcalToken = resp.access_token;
       state.gcalTokenExpiry = Date.now() + resp.expires_in * 1000;
       resolve(true);
     };
     state.tokenClient.requestAccessToken({ prompt: '' });
-    setTimeout(() => { state.tokenClient.callback = origCb; }, 100);
   });
 }
 
@@ -1267,7 +1268,13 @@ async function gcalCreate(appt) {
   const start = `${appt.date}T${appt.time}:00`;
   const endDate = new Date(start);
   endDate.setMinutes(endDate.getMinutes() + (appt.duration || 30));
-  const end = endDate.toISOString().replace('Z', '').split('.')[0];
+  const endH = String(endDate.getHours()).padStart(2, '0');
+  const endM = String(endDate.getMinutes()).padStart(2, '0');
+  const endS = String(endDate.getSeconds()).padStart(2, '0');
+  const endY = endDate.getFullYear();
+  const endMo = String(endDate.getMonth() + 1).padStart(2, '0');
+  const endD = String(endDate.getDate()).padStart(2, '0');
+  const end = `${endY}-${endMo}-${endD}T${endH}:${endM}:${endS}`;
   const body = {
     summary: `${appt.procedure} — ${appt.patientName} (HC: ${appt.patientHcNumber})`,
     description: `Surgeon: ${appt.surgeonName}\nTooth #: ${appt.toothNumber || 'N/A'}\nAnesthesia: ${appt.anesthesia}\n\nPre-Op Notes:\n${appt.preOpNotes || 'None'}`,
@@ -1301,7 +1308,13 @@ async function gcalUpdate(eventId, appt) {
   const start = `${appt.date}T${appt.time}:00`;
   const endDate = new Date(start);
   endDate.setMinutes(endDate.getMinutes() + (appt.duration || 30));
-  const end = endDate.toISOString().replace('Z', '').split('.')[0];
+  const endH = String(endDate.getHours()).padStart(2, '0');
+  const endM = String(endDate.getMinutes()).padStart(2, '0');
+  const endS = String(endDate.getSeconds()).padStart(2, '0');
+  const endY = endDate.getFullYear();
+  const endMo = String(endDate.getMonth() + 1).padStart(2, '0');
+  const endD = String(endDate.getDate()).padStart(2, '0');
+  const end = `${endY}-${endMo}-${endD}T${endH}:${endM}:${endS}`;
   const body = {
     summary: `${appt.procedure} — ${appt.patientName} (HC: ${appt.patientHcNumber})`,
     description: `Surgeon: ${appt.surgeonName}\nTooth #: ${appt.toothNumber || 'N/A'}\nAnesthesia: ${appt.anesthesia}\n\nPre-Op Notes:\n${appt.preOpNotes || 'None'}`,
@@ -2015,6 +2028,9 @@ async function openAppointmentModal(apptId = null, presetPatient = null) {
     patientInput.value = `${item.dataset.name} (${item.dataset.hc})`;
     patientList.classList.remove('open');
   });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.search-dropdown')) patientList.classList.remove('open');
+  });
 
   // Custom procedure toggle
   const procSelect = $('#am-procedure');
@@ -2032,7 +2048,7 @@ async function openAppointmentModal(apptId = null, presetPatient = null) {
 
   if (isEdit && appt.status === 'scheduled') {
     $('#am-cancel-appt')?.addEventListener('click', async () => {
-      const ok = await confirm('Cancel Appointment', 'Are you sure you want to cancel this appointment?', 'Cancel Appointment', 'btn-danger');
+      const ok = await showConfirm('Cancel Appointment', 'Are you sure you want to cancel this appointment?', 'Cancel Appointment', 'btn-danger');
       if (!ok) return;
       try {
         if (appt.calendarEventId) await gcalDelete(appt.calendarEventId);
@@ -2102,7 +2118,7 @@ async function openAppointmentModal(apptId = null, presetPatient = null) {
         await updateDoc(apptRef, apptData);
         if (syncGcal && state.gcalConnected) {
           if (appt.calendarEventId) {
-            const result = await gcalUpdate(appt.calendarEventId, { ...apptData, ...appt, ...apptData });
+            const result = await gcalUpdate(appt.calendarEventId, { ...appt, ...apptData });
             if (result === 'not_found') {
               await updateDoc(apptRef, { calendarEventId: null });
             }
@@ -2226,7 +2242,7 @@ function renderCalendarContent(container) {
 
   container.querySelector('#gcal-connect')?.addEventListener('click', connectGCal);
   container.querySelector('#gcal-disconnect')?.addEventListener('click', async () => {
-    const ok = await confirm('Disconnect Calendar', 'Disconnect Google Calendar?', 'Disconnect', 'btn-danger');
+    const ok = await showConfirm('Disconnect Calendar', 'Disconnect Google Calendar?', 'Disconnect', 'btn-danger');
     if (ok) disconnectGCal();
   });
 
@@ -2243,6 +2259,16 @@ function renderCalendarContent(container) {
   container.querySelector('#cal-today')?.addEventListener('click', () => {
     calYear = todayYear; calMonth = todayMonth;
     renderCalendarContent(container);
+  });
+
+  container.querySelectorAll('.cal-cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      if (cell.classList.contains('outside')) return;
+      const date = cell.dataset.date;
+      if (date) openAppointmentModal(null, null);
+      const modal = $('#am-date');
+      if (modal) modal.value = date;
+    });
   });
 
   container.querySelectorAll('.cal-pill').forEach(pill => {
@@ -2355,7 +2381,7 @@ function renderSettingsContent(container) {
     sel.addEventListener('change', async (e) => {
       const uid = sel.dataset.uid;
       const newRole = sel.value;
-      const ok = await confirm('Change Role', `Change this user's role to ${newRole}?`, 'Change Role', 'btn-gold');
+      const ok = await showConfirm('Change Role', `Change this user's role to ${newRole}?`, 'Change Role', 'btn-gold');
       if (!ok) {
         sel.value = sel.value === 'admin' ? 'surgeon' : 'admin';
         return;
@@ -2375,7 +2401,7 @@ function renderSettingsContent(container) {
       const uid = toggle.dataset.uid;
       const active = toggle.checked;
       if (!active) {
-        const ok = await confirm('Deactivate User', 'This user will be locked out. Continue?', 'Deactivate', 'btn-danger');
+        const ok = await showConfirm('Deactivate User', 'This user will be locked out. Continue?', 'Deactivate', 'btn-danger');
         if (!ok) { toggle.checked = true; return; }
       }
       try {
@@ -2410,7 +2436,7 @@ function renderSettingsContent(container) {
   // Delete procedure
   container.querySelectorAll('.del-proc-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
-      const ok = await confirm('Delete Procedure', 'Delete this custom procedure?', 'Delete', 'btn-danger');
+      const ok = await showConfirm('Delete Procedure', 'Delete this custom procedure?', 'Delete', 'btn-danger');
       if (!ok) return;
       try {
         await deleteDoc(doc(db, 'procedures', btn.dataset.id));
